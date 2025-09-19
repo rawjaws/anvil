@@ -8,16 +8,44 @@ echo "       Starting Anvil v$VERSION - Level 1!"
 echo "============================================"
 echo
 
-# Check if node_modules exists
+# Check if server dependencies need to be installed/updated
+NEED_SERVER_INSTALL=false
 if [ ! -d "node_modules" ]; then
-    echo "Installing server dependencies..."
+    echo "Server node_modules not found..."
+    NEED_SERVER_INSTALL=true
+else
+    # Check if all dependencies from package.json are installed
+    echo "Checking for missing server dependencies..."
+    if ! npm ls --depth=0 --silent > /dev/null 2>&1; then
+        echo "Missing server dependencies detected..."
+        NEED_SERVER_INSTALL=true
+    fi
+fi
+
+if [ "$NEED_SERVER_INSTALL" = true ]; then
+    echo "Installing/updating server dependencies..."
     npm install
     echo
 fi
 
-# Check if client node_modules exists
+# Check if client dependencies need to be installed/updated
+NEED_CLIENT_INSTALL=false
 if [ ! -d "client/node_modules" ]; then
-    echo "Installing client dependencies..."
+    echo "Client node_modules not found..."
+    NEED_CLIENT_INSTALL=true
+else
+    # Check if all client dependencies from package.json are installed
+    echo "Checking for missing client dependencies..."
+    cd client
+    if ! npm ls --depth=0 --silent > /dev/null 2>&1; then
+        echo "Missing client dependencies detected..."
+        NEED_CLIENT_INSTALL=true
+    fi
+    cd ..
+fi
+
+if [ "$NEED_CLIENT_INSTALL" = true ]; then
+    echo "Installing/updating client dependencies..."
     cd client
     npm install
     cd ..
