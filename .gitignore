@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Build outputs
+dist/
+client/dist/
+
+# Environment and local config
+.env
+.env.local
+config.local.json
+CLAUDE.md
+
+# Runtime files
+*.log
+backup/
+
+# IDE files
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

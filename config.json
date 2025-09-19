@@ -1,0 +1,33 @@
+{
+  "workspaces": [
+    {
+      "id": "ws-default",
+      "name": "Default Workspace",
+      "description": "Default workspace for getting started with Anvil",
+      "isActive": true,
+      "projectPaths": [
+        {
+          "path": "./examples/hello-world/specifications",
+          "icon": "Box"
+        }
+      ],
+      "createdDate": "2025-09-17T22:30:00.000Z"
+    }
+  ],
+  "activeWorkspaceId": "ws-default",
+  "templates": "./templates",
+  "server": {
+    "port": 3000
+  },
+  "ui": {
+    "title": "Anvil",
+    "description": "AI Powered Product Development"
+  },
+  "defaults": {
+    "owner": "Product Team",
+    "analysisReview": "Required",
+    "designReview": "Required",
+    "codeReview": "Not Required"
+  },
+  "importedComponents": []
+}
