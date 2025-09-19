@@ -25,7 +25,7 @@ try {
   version = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 } catch (error) {
   console.error('Error loading package.json, using default:', error.message);
-  version = { version: '5.7.1' };
+  version = { version: 'unknown' };
 }
 
 // Security utility for path validation
@@ -1760,7 +1760,7 @@ async function generateEnablerContentFromTemplate(enabler, capabilityId) {
       '- \\*\\*Code Review\\*\\*: Not Required': `- **Code Review**: ${config.defaults?.codeReview || 'Not Required'}`,
       '- \\*\\*Created Date\\*\\*: YYYY-MM-DD': `- **Created Date**: ${currentDate}`,
       '- \\*\\*Last Updated\\*\\*: YYYY-MM-DD': `- **Last Updated**: ${currentDate}`,
-      '- \\*\\*Version\\*\\*: X\\.Y': `- **Version**: 1.0`
+      '- \\*\\*Version\\*\\*: X\\.Y': `- **Version**: ${version.version}`
     }
     
     // Apply replacements with validation
@@ -1809,7 +1809,7 @@ function generateEnablerContentFallback(enabler, capabilityId) {
 - **Developer**: [Development Team/Lead]
 - **Created Date**: ${currentDate}
 - **Last Updated**: ${currentDate}
-- **Version**: 1.0
+- **Version**: ${version.version}
 
 ## Technical Overview
 ### Purpose
