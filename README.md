@@ -1,9 +1,11 @@
 # Anvil
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.1-green.svg)]()
 
-A modern React-based web application for managing Product Requirement Documents (PRDs) organized around Capabilities and Enablers.
+**An AI-Powered Development Framework** for managing Product Requirement Documents (PRDs) organized around Technical Capabilities and Enablers.
+
+Anvil bridges the gap between product requirements and implementation by providing a structured framework that works seamlessly with AI development tools like Claude Code. Transform your specifications into working software through automated development workflows powered by artificial intelligence.
 
 ## Philosophy & Focus
 
