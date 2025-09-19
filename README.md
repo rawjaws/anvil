@@ -1,9 +1,25 @@
 # Anvil
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.1-green.svg)]()
 
-A modern React-based web application for managing Product Requirement Documents (PRDs) organized around Capabilities and Enablers.
+**An AI-Powered No-Code Development Framework** that takes you from **Idea → Requirements → Design → Code → Test** without writing a single line of code.
+
+Anvil is not just a PRD management tool - it's a complete product development pipeline that transforms ideas into working software. Define your product requirements using structured capabilities and enablers, then watch as AI automatically generates your entire application with comprehensive testing through seamless integration with Claude Code and other AI development tools.
+
+**Complete Development Pipeline:**
+- 💡 **Idea**: Capture and organize product concepts
+- 📋 **Requirements**: Structure capabilities, enablers, and detailed specifications
+- 🎨 **Design**: Automated system architecture and component design
+- ⚙️ **Code**: AI-generated implementation with full functionality
+- 🧪 **Test**: Automated test generation and validation
+- 🚀 **Deploy**: Ready-to-run applications from your specifications
+
+## Application Interface
+
+![Anvil Application Screenshot](https://raw.githubusercontent.com/darcydjr/anvil/main/docs/anvil-screenshot.png)
+
+*Anvil's clean interface showing capability management with structured metadata, enabler relationships, and comprehensive status tracking*
 
 ## Philosophy & Focus
 
@@ -17,7 +33,7 @@ Anvil focuses exclusively on the right side, helping engineering teams define, o
 
 ## Overview
 
-Anvil has been completely rewritten as a modern React application with a Node.js Express backend. This tool provides a clean, organized interface for browsing, creating, and editing PRD documentation with automatic categorization and metadata extraction.
+Anvil provides a clean, organized interface for defining product specifications that automatically transform into working software through AI-powered development workflows.
 
 ## 🚀 Implementation Workflow with Claude Code
 
@@ -312,8 +328,6 @@ npm run dev
 - Toast notifications for user feedback
 - Modern ES6+ JavaScript with Vite build system
 
-## Future Enhancement Ideas
-
 ### **Key Features**
 - **Form-based Editor**: User-friendly web forms with markdown editing toggle
 - **Document Management**: Create, edit, and organize capabilities, enablers, and requirements
@@ -325,8 +339,6 @@ npm run dev
 - **Real-time State Management**: Automated status cascading and relationship updates
 - **Backup System**: Automatic backup creation before modifications
 - **Responsive Design**: Modern UI with sticky toolbars and mobile support
-
-### **Future Enhancement Ideas**
 - **Search Functionality**: Search across all documents
 - **Enhanced Visual Mapping**: Advanced graphical relationship views
 - **Export Options**: PDF/Word export capabilities
@@ -397,7 +409,7 @@ Anvil supports **workspace-based configuration** for managing multiple document 
 The system uses workspace-based configuration. Legacy path-based configurations are automatically migrated to the workspace structure.
 
 
-## Best Practices
+## Technical Features
 
 ### 📋 **Document Creation & Management**
 - **Use Form Mode First**: Create new documents using Form mode for structured input, then switch to Markdown mode if needed for custom formatting
