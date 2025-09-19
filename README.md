@@ -15,6 +15,12 @@ Anvil is not just a PRD management tool - it's a complete product development pi
 - 🧪 **Test**: Automated test generation and validation
 - 🚀 **Deploy**: Ready-to-run applications from your specifications
 
+## Application Interface
+
+![Anvil Application Screenshot](https://raw.githubusercontent.com/darcydjr/anvil/main/docs/anvil-screenshot.png)
+
+*Anvil's clean interface showing capability management with structured metadata, enabler relationships, and comprehensive status tracking*
+
 ## Philosophy & Focus
 
 Anvil is specifically designed for the **right side of the engineering problem** - the **Technical Capabilities and Enablers** that form the architectural foundation of software systems.
