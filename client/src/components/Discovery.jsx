@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Search, FileText, Zap, Eye, EyeOff, Send, Loader } from 'lucide-react'
+import { Lightbulb, FileText, Zap, Eye, EyeOff, Send, Loader, AlertCircle } from 'lucide-react'
 import { marked } from 'marked'
 import { apiService } from '../services/apiService'
 import toast from 'react-hot-toast'
@@ -64,8 +64,15 @@ export default function Discovery() {
     <div className="discovery-container">
       <div className="discovery-header">
         <div className="discovery-title">
-          <Search size={24} />
+          <Lightbulb size={24} />
           <h1>Discovery</h1>
+        </div>
+        <div className="discovery-notice">
+          <AlertCircle size={20} />
+          <p className="discovery-notice-text">
+            <strong>Feature Not Yet Implemented:</strong> This Discovery feature is currently under development.
+            The AI analysis and document generation functionality will be available in a future release.
+          </p>
         </div>
         <p className="discovery-subtitle">
           Enter or paste text/markdown describing your project requirements. AI will analyze and generate Capabilities, Enablers, and Requirements.

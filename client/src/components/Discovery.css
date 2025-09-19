@@ -23,6 +23,35 @@
   font-weight: 600;
 }
 
+.discovery-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 15px 0;
+  padding: 16px;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  color: #856404;
+}
+
+.discovery-notice svg {
+  color: #ffc107;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.discovery-notice-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.discovery-notice-text strong {
+  color: #856404;
+  font-weight: 600;
+}
+
 .discovery-subtitle {
   color: var(--text-secondary);
   font-size: 16px;
