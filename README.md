@@ -27,7 +27,7 @@ Anvil focuses exclusively on the right side, helping engineering teams define, o
 
 ## Overview
 
-Anvil has been completely rewritten as a modern React application with a Node.js Express backend. This tool provides a clean, organized interface for browsing, creating, and editing PRD documentation with automatic categorization and metadata extraction.
+Anvil provides a clean, organized interface for defining product specifications that automatically transform into working software through AI-powered development workflows.
 
 ## 🚀 Implementation Workflow with Claude Code
 
@@ -322,8 +322,6 @@ npm run dev
 - Toast notifications for user feedback
 - Modern ES6+ JavaScript with Vite build system
 
-## Future Enhancement Ideas
-
 ### **Key Features**
 - **Form-based Editor**: User-friendly web forms with markdown editing toggle
 - **Document Management**: Create, edit, and organize capabilities, enablers, and requirements
@@ -335,8 +333,6 @@ npm run dev
 - **Real-time State Management**: Automated status cascading and relationship updates
 - **Backup System**: Automatic backup creation before modifications
 - **Responsive Design**: Modern UI with sticky toolbars and mobile support
-
-### **Future Enhancement Ideas**
 - **Search Functionality**: Search across all documents
 - **Enhanced Visual Mapping**: Advanced graphical relationship views
 - **Export Options**: PDF/Word export capabilities
