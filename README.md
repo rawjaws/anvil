@@ -3,15 +3,16 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Version](https://img.shields.io/badge/version-1.0.1-green.svg)]()
 
-**An AI-Powered No-Code Development Framework** that takes you from **Idea → Requirements → Design → Code** without writing a single line of code.
+**An AI-Powered No-Code Development Framework** that takes you from **Idea → Requirements → Design → Code → Test** without writing a single line of code.
 
-Anvil is not just a PRD management tool - it's a complete product development pipeline that transforms ideas into working software. Define your product requirements using structured capabilities and enablers, then watch as AI automatically generates your entire application through seamless integration with Claude Code and other AI development tools.
+Anvil is not just a PRD management tool - it's a complete product development pipeline that transforms ideas into working software. Define your product requirements using structured capabilities and enablers, then watch as AI automatically generates your entire application with comprehensive testing through seamless integration with Claude Code and other AI development tools.
 
 **Complete Development Pipeline:**
 - 💡 **Idea**: Capture and organize product concepts
 - 📋 **Requirements**: Structure capabilities, enablers, and detailed specifications
 - 🎨 **Design**: Automated system architecture and component design
-- ⚙️ **Code**: AI-generated implementation with full test coverage
+- ⚙️ **Code**: AI-generated implementation with full functionality
+- 🧪 **Test**: Automated test generation and validation
 - 🚀 **Deploy**: Ready-to-run applications from your specifications
 
 ## Philosophy & Focus
