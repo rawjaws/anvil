@@ -409,7 +409,7 @@ Anvil supports **workspace-based configuration** for managing multiple document 
 The system uses workspace-based configuration. Legacy path-based configurations are automatically migrated to the workspace structure.
 
 
-## Best Practices
+## Technical Features
 
 ### 📋 **Document Creation & Management**
 - **Use Form Mode First**: Create new documents using Form mode for structured input, then switch to Markdown mode if needed for custom formatting
