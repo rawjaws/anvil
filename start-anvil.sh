@@ -52,13 +52,57 @@ if [ "$NEED_CLIENT_INSTALL" = true ]; then
     echo
 fi
 
-# Check if dist directory exists, if not build the client
+# Check if client needs to be built/rebuilt
+NEED_CLIENT_BUILD=false
+
 if [ ! -d "dist" ]; then
-    echo "Building React client application..."
+    echo "Client dist directory not found..."
+    NEED_CLIENT_BUILD=true
+elif [ ! -f "dist/index.html" ]; then
+    echo "Client build incomplete - missing index.html..."
+    NEED_CLIENT_BUILD=true
+else
+    # Check if any client source files are newer than the built index.html
+    echo "Checking if client source files have changed..."
+
+    # Check if client package.json is newer than dist/index.html
+    if [ "client/package.json" -nt "dist/index.html" ]; then
+        echo "client/package.json has changed..."
+        NEED_CLIENT_BUILD=true
+    fi
+
+    # Check if any source files in client/src are newer than dist/index.html
+    if [ "$NEED_CLIENT_BUILD" = false ]; then
+        SOURCE_NEWER_COUNT=$(find client/src -name "*.jsx" -o -name "*.js" -o -name "*.css" -o -name "*.ts" -o -name "*.tsx" | xargs ls -t 2>/dev/null | head -1 | xargs stat --format="%Y" 2>/dev/null || echo "0")
+        DIST_TIME=$(stat --format="%Y" dist/index.html 2>/dev/null || echo "0")
+
+        if [ "$SOURCE_NEWER_COUNT" -gt "$DIST_TIME" ]; then
+            echo "Client source files have changed..."
+            NEED_CLIENT_BUILD=true
+        fi
+    fi
+
+    # Check if vite.config.js changed
+    if [ "$NEED_CLIENT_BUILD" = false ] && [ -f "client/vite.config.js" ] && [ "client/vite.config.js" -nt "dist/index.html" ]; then
+        echo "Vite configuration has changed..."
+        NEED_CLIENT_BUILD=true
+    fi
+
+    # Check if HTML template changed
+    if [ "$NEED_CLIENT_BUILD" = false ] && [ -f "client/index.html" ] && [ "client/index.html" -nt "dist/index.html" ]; then
+        echo "HTML template has changed..."
+        NEED_CLIENT_BUILD=true
+    fi
+fi
+
+if [ "$NEED_CLIENT_BUILD" = true ]; then
+    echo "Building/rebuilding React client application..."
     cd client
     npm run build
     cd ..
     echo
+else
+    echo "Client is up to date, skipping build."
 fi
 
 echo "Starting Anvil server..."
