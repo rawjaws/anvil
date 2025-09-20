@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { apiService } from '../services/apiService'
 import { useApp } from '../contexts/AppContext'
-import { Edit, Trash2, ArrowLeft } from 'lucide-react'
+import { Edit, Trash2, ArrowLeft, Users } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { renderMermaidDiagrams } from '../utils/mermaidUtils'
 import './DocumentView.css'
@@ -170,6 +170,10 @@ export default function DocumentView() {
     navigate(`/edit/${type}/${path}`)
   }
 
+  const handleCollaborativeEdit = () => {
+    navigate(`/collaborate/${type}/${path}`)
+  }
+
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this document? A backup will be created.')) {
       return
@@ -238,6 +242,10 @@ export default function DocumentView() {
               <button onClick={handleEdit} className="btn btn-primary btn-sm">
                 <Edit size={16} />
                 Edit
+              </button>
+              <button onClick={handleCollaborativeEdit} className="btn btn-success btn-sm" title="Collaborative Real-time Editing">
+                <Users size={16} />
+                Collaborate
               </button>
               <button onClick={handleDelete} className="btn btn-danger btn-sm">
                 <Trash2 size={16} />

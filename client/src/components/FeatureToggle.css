@@ -1,0 +1,391 @@
+/* Feature Toggle Components Styles */
+
+/* Main Feature Toggle */
+.feature-toggle {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.feature-toggle.enabled {
+  border-color: #10b981;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.1);
+}
+
+.feature-toggle.disabled {
+  border-color: #d1d5db;
+  opacity: 0.7;
+}
+
+.feature-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.feature-info {
+  flex: 1;
+}
+
+.feature-name {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.feature-description {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.feature-dependencies {
+  margin-top: 8px;
+}
+
+.feature-dependencies small {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  min-width: 80px;
+}
+
+.toggle-switch:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: #d1d5db;
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-switch.on .toggle-slider {
+  background-color: #10b981;
+}
+
+.toggle-switch.on .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+.toggle-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Feature Configuration */
+.feature-config {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.feature-config h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.config-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.config-option label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+}
+
+.config-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #10b981;
+}
+
+/* Compact Feature Toggle */
+.feature-toggle-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.feature-toggle-compact:hover {
+  background-color: #f9fafb;
+}
+
+.feature-toggle-compact .toggle-switch {
+  min-width: 32px;
+}
+
+.feature-toggle-compact .toggle-slider {
+  width: 28px;
+  height: 16px;
+  border-radius: 8px;
+}
+
+.feature-toggle-compact .toggle-slider::before {
+  width: 12px;
+  height: 12px;
+  top: 2px;
+  left: 2px;
+}
+
+.feature-toggle-compact .toggle-switch.on .toggle-slider::before {
+  transform: translateX(12px);
+}
+
+.feature-toggle-compact .feature-name {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Feature Category Group */
+.feature-category-group {
+  margin-bottom: 32px;
+}
+
+.category-header {
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.category-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.category-icon {
+  font-size: 24px;
+}
+
+.category-count {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.category-features {
+  display: grid;
+  gap: 12px;
+}
+
+/* Feature Management Dashboard */
+.feature-management-dashboard {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.dashboard-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.config-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.config-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #3b82f6;
+}
+
+/* Feature Status Summary */
+.feature-status-summary {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+}
+
+.status-item {
+  text-align: center;
+}
+
+.status-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.status-label {
+  font-size: 12px;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Quick Feature Toggles */
+.quick-feature-toggles {
+  display: flex;
+  gap: 12px;
+}
+
+.quick-feature-toggles.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.quick-feature-toggles.vertical {
+  flex-direction: column;
+}
+
+/* Loading and Error States */
+.feature-dashboard.loading,
+.feature-dashboard.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.feature-dashboard.error {
+  color: #dc2626;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .feature-management-dashboard {
+    padding: 16px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .feature-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .config-options {
+    grid-template-columns: 1fr;
+  }
+
+  .status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quick-feature-toggles.horizontal {
+    flex-direction: column;
+  }
+}
+
+/* Accessibility */
+.toggle-switch:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.config-option input[type="checkbox"]:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Animation for feature state changes */
+.feature-toggle {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

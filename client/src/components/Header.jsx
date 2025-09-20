@@ -1,12 +1,15 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Settings, HelpCircle, Bot, Lightbulb } from 'lucide-react'
+import { Settings, HelpCircle, Bot, Lightbulb, BarChart3, Sliders } from 'lucide-react'
 import { useApp } from '../contexts/AppContext'
+import { useFeatures } from '../contexts/FeatureContext'
+import RealtimeNotifications from './RealtimeNotifications.jsx'
 import { version } from '../../../package.json'
 import './Header.css'
 
-export default function Header() {
+export default function Header({ realtimeNotifications = null }) {
   const { config, setSelectedCapability } = useApp()
+  const { isFeatureEnabled } = useFeatures()
   const navigate = useNavigate()
 
   const handleLogoClick = () => {
@@ -44,6 +47,7 @@ export default function Header() {
             <div className="build-version">BUILD v{version}</div>
           </div>
           <div className="header-actions">
+            {realtimeNotifications && realtimeNotifications}
             <button
               className="agents-button"
               onClick={() => navigate('/agents')}
@@ -57,6 +61,22 @@ export default function Header() {
               title="Discovery - AI Analysis"
             >
               <Lightbulb size={20} />
+            </button>
+            {isFeatureEnabled('advancedAnalytics') && (
+              <button
+                className="analytics-button"
+                onClick={() => navigate('/analytics')}
+                title="Advanced Analytics"
+              >
+                <BarChart3 size={20} />
+              </button>
+            )}
+            <button
+              className="features-button"
+              onClick={() => navigate('/features')}
+              title="Feature Management"
+            >
+              <Sliders size={20} />
             </button>
             <button
               className="help-button"

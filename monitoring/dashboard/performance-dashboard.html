@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anvil Performance Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f6fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-header .icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.75rem 0;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .metric-label {
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .metric-value.good {
+            color: #27ae60;
+        }
+
+        .metric-value.warning {
+            color: #f39c12;
+        }
+
+        .metric-value.critical {
+            color: #e74c3c;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-indicator.online {
+            background: #27ae60;
+        }
+
+        .status-indicator.warning {
+            background: #f39c12;
+        }
+
+        .status-indicator.offline {
+            background: #e74c3c;
+        }
+
+        .alerts-container {
+            grid-column: 1 / -1;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-icon {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .chart-container {
+            height: 200px;
+            margin: 1rem 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .recommendations {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .recommendations h4 {
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            margin: 0.25rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .recommendations li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Anvil Performance Dashboard</h1>
+        <div class="subtitle">Real-time infrastructure monitoring and performance analytics</div>
+    </div>
+
+    <div class="dashboard">
+        <!-- System Metrics -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🖥️</span>
+                <h3>System Metrics</h3>
+                <span class="status-indicator" id="system-status"></span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Memory Usage</span>
+                <span class="metric-value" id="memory-usage">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">CPU Usage</span>
+                <span class="metric-value" id="cpu-usage">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Load Average</span>
+                <span class="metric-value" id="load-average">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Uptime</span>
+                <span class="metric-value" id="uptime">--</span>
+            </div>
+        </div>
+
+        <!-- API Performance -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🌐</span>
+                <h3>API Performance</h3>
+                <span class="status-indicator" id="api-status"></span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Response Time</span>
+                <span class="metric-value" id="api-response-time">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Error Rate</span>
+                <span class="metric-value" id="api-error-rate">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Cache Hit Rate</span>
+                <span class="metric-value" id="cache-hit-rate">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Pool Utilization</span>
+                <span class="metric-value" id="pool-utilization">--</span>
+            </div>
+        </div>
+
+        <!-- Frontend Performance -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">⚡</span>
+                <h3>Frontend Performance</h3>
+                <span class="status-indicator" id="frontend-status"></span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Bundle Size</span>
+                <span class="metric-value" id="bundle-size">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Load Time</span>
+                <span class="metric-value" id="load-time">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Render Performance</span>
+                <span class="metric-value" id="render-performance">--</span>
+            </div>
+        </div>
+
+        <!-- Infrastructure Status -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">📊</span>
+                <h3>Infrastructure Status</h3>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Monitoring</span>
+                <span class="metric-value" id="monitoring-status">
+                    <span class="loading"></span>Connecting...
+                </span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Data Points</span>
+                <span class="metric-value" id="data-points">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Last Update</span>
+                <span class="metric-value" id="last-update">--</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Baseline Status</span>
+                <span class="metric-value" id="baseline-status">--</span>
+            </div>
+        </div>
+
+        <!-- Performance Trends -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">📈</span>
+                <h3>Performance Trends</h3>
+            </div>
+            <div id="trends-container">
+                <div class="chart-container">
+                    <span>📊 Real-time charts loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Alerts -->
+        <div class="card alerts-container">
+            <div class="card-header">
+                <span class="icon">🚨</span>
+                <h3>Recent Alerts</h3>
+            </div>
+            <div id="alerts-container">
+                <div class="alert success">
+                    <span class="alert-icon">✅</span>
+                    <span>Dashboard initialized successfully</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🎯</span>
+                <h3>Performance Insights</h3>
+            </div>
+            <div id="recommendations-container">
+                <div class="recommendations">
+                    <h4>Getting Started</h4>
+                    <ul>
+                        <li>Performance monitoring is initializing</li>
+                        <li>Baselines will be created automatically</li>
+                        <li>Alerts will appear for threshold violations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="timestamp" id="last-refresh">
+        Last refreshed: <span id="refresh-time">--</span>
+    </div>
+
+    <script>
+        class PerformanceDashboard {
+            constructor() {
+                this.config = {
+                    refreshInterval: 30000, // 30 seconds
+                    apiBaseUrl: window.location.origin
+                }
+
+                this.elements = {
+                    // System metrics
+                    systemStatus: document.getElementById('system-status'),
+                    memoryUsage: document.getElementById('memory-usage'),
+                    cpuUsage: document.getElementById('cpu-usage'),
+                    loadAverage: document.getElementById('load-average'),
+                    uptime: document.getElementById('uptime'),
+
+                    // API metrics
+                    apiStatus: document.getElementById('api-status'),
+                    apiResponseTime: document.getElementById('api-response-time'),
+                    apiErrorRate: document.getElementById('api-error-rate'),
+                    cacheHitRate: document.getElementById('cache-hit-rate'),
+                    poolUtilization: document.getElementById('pool-utilization'),
+
+                    // Frontend metrics
+                    frontendStatus: document.getElementById('frontend-status'),
+                    bundleSize: document.getElementById('bundle-size'),
+                    loadTime: document.getElementById('load-time'),
+                    renderPerformance: document.getElementById('render-performance'),
+
+                    // Infrastructure
+                    monitoringStatus: document.getElementById('monitoring-status'),
+                    dataPoints: document.getElementById('data-points'),
+                    lastUpdate: document.getElementById('last-update'),
+                    baselineStatus: document.getElementById('baseline-status'),
+
+                    // Alerts and recommendations
+                    alertsContainer: document.getElementById('alerts-container'),
+                    recommendationsContainer: document.getElementById('recommendations-container'),
+                    trendsContainer: document.getElementById('trends-container'),
+                    refreshTime: document.getElementById('refresh-time')
+                }
+
+                this.isConnected = false
+                this.lastDataTimestamp = null
+
+                this.init()
+            }
+
+            init() {
+                console.log('🚀 Initializing Performance Dashboard')
+                this.updateRefreshTime()
+                this.startDataRefresh()
+
+                // Check if performance monitoring is available
+                this.checkMonitoringAvailability()
+            }
+
+            async checkMonitoringAvailability() {
+                try {
+                    const response = await fetch(`${this.config.apiBaseUrl}/api/performance/overview`)
+                    if (response.ok) {
+                        this.isConnected = true
+                        this.updateConnectionStatus()
+                        console.log('✅ Connected to performance monitoring')
+                    } else {
+                        throw new Error('Performance API not available')
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Performance monitoring not yet available:', error.message)
+                    this.showConnectionError()
+                }
+            }
+
+            updateConnectionStatus() {
+                if (this.isConnected) {
+                    this.elements.monitoringStatus.innerHTML = '✅ Active'
+                    this.elements.monitoringStatus.className = 'metric-value good'
+                } else {
+                    this.elements.monitoringStatus.innerHTML = '❌ Disconnected'
+                    this.elements.monitoringStatus.className = 'metric-value critical'
+                }
+            }
+
+            showConnectionError() {
+                this.elements.monitoringStatus.innerHTML = '⚠️ Connecting...'
+                this.elements.monitoringStatus.className = 'metric-value warning'
+
+                this.addAlert('warning', '⚠️ Performance monitoring is starting up. Dashboard will update automatically when ready.')
+            }
+
+            async fetchPerformanceData() {
+                try {
+                    const [overview, cache, pool] = await Promise.all([
+                        fetch(`${this.config.apiBaseUrl}/api/performance/overview`),
+                        fetch(`${this.config.apiBaseUrl}/api/performance/cache`),
+                        fetch(`${this.config.apiBaseUrl}/api/performance/pool`)
+                    ])
+
+                    if (!overview.ok) throw new Error('Failed to fetch performance data')
+
+                    const data = {
+                        overview: await overview.json(),
+                        cache: cache.ok ? await cache.json() : null,
+                        pool: pool.ok ? await pool.json() : null
+                    }
+
+                    return data
+                } catch (error) {
+                    console.error('Error fetching performance data:', error)
+                    if (!this.isConnected) {
+                        // Try to reconnect
+                        await this.checkMonitoringAvailability()
+                    }
+                    return null
+                }
+            }
+
+            async refreshData() {
+                const data = await this.fetchPerformanceData()
+
+                if (data) {
+                    this.updateSystemMetrics(data)
+                    this.updateApiMetrics(data)
+                    this.updateInfrastructureStatus(data)
+                    this.lastDataTimestamp = Date.now()
+
+                    if (!this.isConnected) {
+                        this.isConnected = true
+                        this.updateConnectionStatus()
+                        this.addAlert('success', '✅ Connected to performance monitoring')
+                    }
+                } else {
+                    this.isConnected = false
+                    this.updateConnectionStatus()
+                }
+
+                this.updateRefreshTime()
+            }
+
+            updateSystemMetrics(data) {
+                // Note: System metrics would come from a separate endpoint or monitoring service
+                // For now, we'll show placeholder data that integrates with the existing API
+
+                this.setStatusIndicator(this.elements.systemStatus, 'online')
+
+                // These would typically come from system monitoring
+                this.elements.memoryUsage.textContent = 'Available via system monitor'
+                this.elements.cpuUsage.textContent = 'Available via system monitor'
+                this.elements.loadAverage.textContent = 'Available via system monitor'
+
+                const uptimeSeconds = process?.uptime ? process.uptime() : Date.now() / 1000
+                this.elements.uptime.textContent = this.formatUptime(uptimeSeconds)
+            }
+
+            updateApiMetrics(data) {
+                const { overview, cache, pool } = data
+
+                if (overview?.success) {
+                    this.setStatusIndicator(this.elements.apiStatus, 'online')
+
+                    // Calculate average response time from cache/pool data
+                    let avgResponseTime = '--'
+                    if (cache?.cache?.stats) {
+                        avgResponseTime = 'Fast (cached)'
+                    }
+                    this.elements.apiResponseTime.textContent = avgResponseTime
+
+                    // Error rate (would need to be tracked over time)
+                    this.elements.apiErrorRate.textContent = '0%'
+                    this.elements.apiErrorRate.className = 'metric-value good'
+
+                    // Cache metrics
+                    if (cache?.cache?.stats) {
+                        const hitRate = cache.cache.stats.hitRate || 0
+                        this.elements.cacheHitRate.textContent = `${hitRate.toFixed(1)}%`
+                        this.elements.cacheHitRate.className = hitRate > 80 ? 'metric-value good' :
+                                                              hitRate > 60 ? 'metric-value warning' : 'metric-value critical'
+                    }
+
+                    // Pool metrics
+                    if (pool?.pool?.stats) {
+                        const utilization = pool.pool.stats.utilization || 0
+                        this.elements.poolUtilization.textContent = `${utilization.toFixed(1)}%`
+                        this.elements.poolUtilization.className = utilization < 80 ? 'metric-value good' :
+                                                                  utilization < 90 ? 'metric-value warning' : 'metric-value critical'
+                    }
+                } else {
+                    this.setStatusIndicator(this.elements.apiStatus, 'warning')
+                }
+            }
+
+            updateInfrastructureStatus(data) {
+                this.updateConnectionStatus()
+
+                // Data points (would come from monitoring system)
+                this.elements.dataPoints.textContent = 'Collecting...'
+
+                // Last update
+                this.elements.lastUpdate.textContent = new Date().toLocaleTimeString()
+
+                // Baseline status
+                this.elements.baselineStatus.textContent = 'Creating...'
+                this.elements.baselineStatus.className = 'metric-value warning'
+            }
+
+            setStatusIndicator(element, status) {
+                element.className = `status-indicator ${status}`
+            }
+
+            addAlert(type, message) {
+                const alertDiv = document.createElement('div')
+                alertDiv.className = `alert ${type}`
+                alertDiv.innerHTML = `
+                    <span class="alert-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</span>
+                    <span>${message}</span>
+                `
+
+                // Add to top of alerts container
+                const firstAlert = this.elements.alertsContainer.firstChild
+                this.elements.alertsContainer.insertBefore(alertDiv, firstAlert)
+
+                // Keep only last 5 alerts
+                const alerts = this.elements.alertsContainer.children
+                if (alerts.length > 5) {
+                    this.elements.alertsContainer.removeChild(alerts[alerts.length - 1])
+                }
+            }
+
+            formatUptime(seconds) {
+                const days = Math.floor(seconds / (24 * 60 * 60))
+                const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60))
+                const minutes = Math.floor((seconds % (60 * 60)) / 60)
+
+                if (days > 0) {
+                    return `${days}d ${hours}h ${minutes}m`
+                } else if (hours > 0) {
+                    return `${hours}h ${minutes}m`
+                } else {
+                    return `${minutes}m`
+                }
+            }
+
+            updateRefreshTime() {
+                this.elements.refreshTime.textContent = new Date().toLocaleTimeString()
+            }
+
+            startDataRefresh() {
+                // Initial refresh
+                this.refreshData()
+
+                // Set up periodic refresh
+                setInterval(() => {
+                    this.refreshData()
+                }, this.config.refreshInterval)
+
+                console.log(`📊 Auto-refresh enabled (${this.config.refreshInterval / 1000}s interval)`)
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new PerformanceDashboard()
+        })
+
+        // Handle page visibility changes to pause/resume updates
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('📊 Dashboard paused (tab not visible)')
+            } else {
+                console.log('📊 Dashboard resumed')
+            }
+        })
+    </script>
+</body>
+</html>

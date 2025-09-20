@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-09-20T14:24:16.348Z",
+  "summary": {
+    "totalRegressions": 1,
+    "totalImprovements": 1,
+    "totalWarnings": 0
+  },
+  "baseline": {
+    "timestamp": "2025-09-20T14:24:09.640Z",
+    "source": "baseline.json"
+  },
+  "current": {
+    "timestamp": "2025-09-20T14:24:15.663Z"
+  },
+  "regressions": [
+    {
+      "type": "api",
+      "metric": "Concurrent load requests per second",
+      "current": 734.4804752981803,
+      "baseline": 822.384604986511,
+      "change": "-10.69",
+      "isRegression": true,
+      "isImprovement": false
+    }
+  ],
+  "improvements": [
+    {
+      "type": "memory",
+      "metric": "Memory usage difference",
+      "current": -830872,
+      "baseline": 1567048,
+      "change": "-153.02",
+      "isRegression": false,
+      "isImprovement": true
+    }
+  ],
+  "warnings": []
+}

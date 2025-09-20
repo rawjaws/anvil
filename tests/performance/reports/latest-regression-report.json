@@ -1,0 +1,73 @@
+{
+  "timestamp": "2025-09-20T16:14:58.249Z",
+  "summary": {
+    "totalRegressions": 0,
+    "totalImprovements": 6,
+    "totalWarnings": 0
+  },
+  "baseline": {
+    "timestamp": "2025-09-20T14:24:09.640Z",
+    "source": "baseline.json"
+  },
+  "current": {
+    "timestamp": "2025-09-20T16:14:57.815Z"
+  },
+  "regressions": [],
+  "improvements": [
+    {
+      "type": "api",
+      "metric": "Features endpoint average response time",
+      "current": 3.0261091999999996,
+      "baseline": 6.158759300000001,
+      "change": "-50.86",
+      "isRegression": false,
+      "isImprovement": true
+    },
+    {
+      "type": "api",
+      "metric": "Features endpoint P95 response time",
+      "current": 5.286501,
+      "baseline": 8.117716,
+      "change": "-34.88",
+      "isRegression": false,
+      "isImprovement": true
+    },
+    {
+      "type": "api",
+      "metric": "Single feature endpoint average response time",
+      "current": 2.2598130000000003,
+      "baseline": 5.4535412,
+      "change": "-58.56",
+      "isRegression": false,
+      "isImprovement": true
+    },
+    {
+      "type": "api",
+      "metric": "Load test requests per second",
+      "current": 1067.7920454489881,
+      "baseline": 576.6706726056057,
+      "change": "85.16",
+      "isRegression": false,
+      "isImprovement": true
+    },
+    {
+      "type": "api",
+      "metric": "Concurrent load requests per second",
+      "current": 1612.39961099247,
+      "baseline": 822.384604986511,
+      "change": "96.06",
+      "isRegression": false,
+      "isImprovement": true
+    },
+    {
+      "type": "memory",
+      "metric": "Memory usage difference",
+      "current": -1123168,
+      "baseline": 1567048,
+      "change": "-171.67",
+      "isRegression": false,
+      "isImprovement": true
+    }
+  ],
+  "warnings": []
+}

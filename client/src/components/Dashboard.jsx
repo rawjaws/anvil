@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { useApp } from '../contexts/AppContext'
 import { FileText, Plus, Settings } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import RelationshipDiagram from './RelationshipDiagram'
 import './Dashboard.css'
+
+// Lazy load the relationship diagram since it might be computationally expensive
+const RelationshipDiagram = lazy(() => import('./RelationshipDiagram'))
 
 export default function Dashboard() {
   const { capabilities, enablers, templates, loading, error } = useApp()
@@ -33,7 +35,9 @@ export default function Dashboard() {
         <p>Manage your capabilities, enablers, and templates</p>
       </div>
 
-      <RelationshipDiagram />
+      <Suspense fallback={<div className="loading-placeholder">Loading relationship diagram...</div>}>
+        <RelationshipDiagram />
+      </Suspense>
 
       <div className="dashboard-stats">
         <div className="stat-card">

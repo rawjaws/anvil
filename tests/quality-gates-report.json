@@ -1,0 +1,73 @@
+{
+  "gates": [
+    {
+      "name": "Code Quality",
+      "status": "FAILED",
+      "duration": 8710,
+      "details": "ESLint violations found. Run npm run lint:fix to resolve.",
+      "warnings": [],
+      "metrics": {}
+    },
+    {
+      "name": "Integration Tests",
+      "status": "FAILED",
+      "duration": 23810,
+      "details": "Integration tests failed: Command failed: npm run test:integration\nFAIL tests/integration/parallel-development/concurrent-features.test.js (5.648 s)\n  ● Parallel Feature Development Integration › Branch Safety Simulation › Feature state changes simulate branch merge safety\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: true\n    Received: false\n\n      237 |       const mergedState = await axios.get(`${BASE_URL}/api/features`)\n      238 |       expect(mergedState.data.features.collaborativeReviews.enabled).toBe(branch1Changes.collaborativeReviews.enabled)\n    > 239 |       expect(mergedState.data.features.aiWorkflowAutomation.enabled).toBe(branch2Changes.aiWorkflowAutomation.enabled)\n          |                                                                      ^\n      240 |\n      241 |       // Restore original state\n      242 |       await Promise.all([\n\n      at Object.toBe (tests/integration/parallel-development/concurrent-features.test.js:239:70)\n\nnode:internal/child_process/serialization:159\n    const string = JSONStringify(message) + '\\n';\n                   ^\n\nTypeError: Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    |     property 'socket' -> object with constructor 'Object'\n    --- property '_httpMessage' closes the circle\n    at stringify (<anonymous>)\n    at writeChannelMessage (node:internal/child_process/serialization:159:20)\n    at process.target._send (node:internal/child_process:845:17)\n    at process.target.send (node:internal/child_process:745:19)\n    at reportSuccess (/mnt/c/Users/Mike/Documents/Anvil/anvil-main/anvil-main/anvil/node_modules/jest-worker/build/workers/processChild.js:82:11)\n\nNode.js v18.19.1\nPASS tests/integration/feature-system.test.js (6.88 s)\n\nTest Suites: 1 failed, 1 passed, 2 total\nTests:       1 failed, 17 passed, 18 total\nSnapshots:   0 total\nTime:        15.597 s\nRan all test suites matching /tests\\/integration\\//i.\n",
+      "warnings": [],
+      "metrics": {}
+    },
+    {
+      "name": "Feature Isolation",
+      "status": "PASSED",
+      "duration": 83,
+      "details": "Feature isolation validated successfully",
+      "warnings": [],
+      "metrics": {
+        "featuresChecked": 6
+      }
+    },
+    {
+      "name": "Performance Baseline",
+      "status": "FAILED",
+      "duration": 1599,
+      "details": "Performance baseline file missing. Run npm run performance:baseline first.",
+      "warnings": [],
+      "metrics": {}
+    },
+    {
+      "name": "Concurrent Development Safety",
+      "status": "PASSED",
+      "duration": 15580,
+      "details": "Concurrent development safety validated",
+      "warnings": [],
+      "metrics": {
+        "concurrentRequests": 5
+      }
+    },
+    {
+      "name": "API Contract Compliance",
+      "status": "PASSED",
+      "duration": 12,
+      "details": "API contracts validated successfully",
+      "warnings": [],
+      "metrics": {
+        "endpointsChecked": 2
+      }
+    },
+    {
+      "name": "Feature Flag Compatibility",
+      "status": "PASSED",
+      "duration": 26,
+      "details": "Feature flag system validated successfully",
+      "warnings": [],
+      "metrics": {
+        "featuresValidated": 6
+      }
+    }
+  ],
+  "passed": 4,
+  "failed": 3,
+  "warnings": 0,
+  "summary": "❌ 3 quality gate(s) failed. Fix issues before merging.",
+  "timestamp": "2025-09-20T16:14:24.080Z"
+}

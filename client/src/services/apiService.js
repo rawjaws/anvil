@@ -233,5 +233,82 @@ export const apiService = {
       console.error('Failed to create document from discovery:', error)
       throw new Error(`Failed to create ${type}: ${error.message}`)
     }
+  },
+
+  // Feature Management APIs
+  async getFeatures() {
+    try {
+      const response = await api.get('/features')
+      return response.data
+    } catch (error) {
+      console.error('Failed to get features:', error)
+      throw new Error(`Failed to load features: ${error.message}`)
+    }
+  },
+
+  async getFeature(featureId) {
+    try {
+      if (!featureId) throw new Error('Feature ID is required')
+      const response = await api.get(`/features/${featureId}`)
+      return response.data
+    } catch (error) {
+      console.error(`Failed to get feature ${featureId}:`, error)
+      throw new Error(`Failed to load feature: ${error.message}`)
+    }
+  },
+
+  async updateFeature(featureId, updates) {
+    try {
+      if (!featureId) throw new Error('Feature ID is required')
+      if (!updates || typeof updates !== 'object') throw new Error('Updates object is required')
+
+      const response = await api.put(`/features/${featureId}`, updates)
+      return response.data
+    } catch (error) {
+      console.error(`Failed to update feature ${featureId}:`, error)
+      throw new Error(`Failed to update feature: ${error.message}`)
+    }
+  },
+
+  async toggleFeature(featureId) {
+    try {
+      if (!featureId) throw new Error('Feature ID is required')
+      const response = await api.post(`/features/${featureId}/toggle`)
+      return response.data
+    } catch (error) {
+      console.error(`Failed to toggle feature ${featureId}:`, error)
+      throw new Error(`Failed to toggle feature: ${error.message}`)
+    }
+  },
+
+  async batchUpdateFeatures(updates) {
+    try {
+      if (!updates || typeof updates !== 'object') throw new Error('Updates object is required')
+      const response = await api.post('/features/batch-update', { updates })
+      return response.data
+    } catch (error) {
+      console.error('Failed to batch update features:', error)
+      throw new Error(`Failed to update features: ${error.message}`)
+    }
+  },
+
+  async getFeatureStatus() {
+    try {
+      const response = await api.get('/features/status')
+      return response.data
+    } catch (error) {
+      console.error('Failed to get feature status:', error)
+      throw new Error(`Failed to load feature status: ${error.message}`)
+    }
+  },
+
+  async resetFeatures(featureIds = null) {
+    try {
+      const response = await api.post('/features/reset', { featureIds })
+      return response.data
+    } catch (error) {
+      console.error('Failed to reset features:', error)
+      throw new Error(`Failed to reset features: ${error.message}`)
+    }
   }
 }

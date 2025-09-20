@@ -15,10 +15,15 @@
  */
 
 const express = require('express');
+const http = require('http');
 const fs = require('fs-extra');
 const path = require('path');
 const { marked } = require('marked');
 const agentAPI = require('./api/agent-endpoints');
+const RealtimeCollaborationServer = require('./websocket/server');
+const { router: realtimeAPI, collaborationManager } = require('./api/realtime-endpoints');
+const marketplaceAPI = require('./api/marketplace-endpoints');
+const { marketplaceManager } = require('./marketplace/index');
 
 // Load version from package.json
 let version;
@@ -226,6 +231,65 @@ try {
 const app = express();
 const PORT = process.env.PORT || config.server.port;
 
+// Performance Optimization Imports
+const CacheManager = require('./cache/CacheManager');
+const RequestPool = require('./cache/RequestPool');
+
+// Initialize performance systems
+const cacheManager = new CacheManager({
+  memoryLimit: 50 * 1024 * 1024, // 50MB
+  defaultTTL: 300000, // 5 minutes
+  maxMemoryEntries: 500,
+  enableDiskCache: true
+});
+
+const requestPool = new RequestPool({
+  maxConcurrent: 30,
+  maxQueueSize: 500,
+  requestTimeout: 10000,
+  enableBatching: true,
+  batchInterval: 5
+});
+
+// Performance middleware
+app.use((req, res, next) => {
+  // Add performance headers
+  res.set({
+    'X-Powered-By': 'Anvil-Optimized',
+    'X-Response-Time': Date.now()
+  });
+
+  // Enable response compression
+  if (req.accepts('gzip')) {
+    res.set('Content-Encoding', 'gzip');
+  }
+
+  next();
+});
+
+// Request pooling middleware for API endpoints
+app.use('/api', (req, res, next) => {
+  const originalSend = res.send;
+  const startTime = Date.now();
+
+  // Wrap response in request pool if it's a high-cost operation
+  if (req.path.includes('/validate') || req.path.includes('/analyze')) {
+    req.useRequestPool = true;
+    req.requestPool = requestPool;
+    req.cache = cacheManager;
+  }
+
+  res.send = function(data) {
+    // Add performance timing
+    const responseTime = Date.now() - startTime;
+    res.set('X-Response-Time', responseTime + 'ms');
+
+    return originalSend.call(this, data);
+  };
+
+  next();
+});
+
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 
@@ -244,6 +308,15 @@ agentAPI.initializeAgents().then(success => {
     console.log('[SERVER] Agent system initialized');
   } else {
     console.warn('[SERVER] Agent system initialization failed - agents will not be available');
+  }
+});
+
+// Initialize marketplace on server start
+marketplaceManager.initialize().then(success => {
+  if (success) {
+    console.log('[SERVER] Template marketplace initialized');
+  } else {
+    console.warn('[SERVER] Template marketplace initialization failed - marketplace will not be available');
   }
 });
 
@@ -2536,6 +2609,57 @@ app.delete('/api/workspaces/:id/paths', async (req, res) => {
   }
 });
 
+// Feature Management Endpoints
+const { setupFeatureRoutes } = require('./api/feature-endpoints');
+setupFeatureRoutes(app);
+
+// Requirements Precision Engine Endpoints
+const { setupValidationRoutes, initializePrecisionEngine } = require('./api/validation-endpoints');
+setupValidationRoutes(app);
+
+// Advanced Precision Engine API
+const precisionEngineRoutes = require('./api/precision-engine-endpoints');
+app.use('/api/precision-engine', precisionEngineRoutes);
+
+// Real-time Collaboration Endpoints
+app.use('/api/realtime', realtimeAPI);
+
+// Template Marketplace Endpoints
+app.use('/api/marketplace', marketplaceAPI);
+
+// AI Workflow Automation Endpoints
+try {
+  // Basic health endpoint for AI workflow
+  app.get('/api/ai-workflow/health', (req, res) => {
+    res.json({
+      status: 'ok',
+      service: 'ai-workflow',
+      timestamp: Date.now(),
+      version: version.version
+    });
+  });
+
+  app.get('/api/ai-workflow/ping', (req, res) => {
+    res.json({
+      status: 'ok',
+      timestamp: Date.now()
+    });
+  });
+
+  console.log('[AI-WORKFLOW] AI Workflow basic endpoints registered successfully');
+} catch (error) {
+  console.error('[AI-WORKFLOW] Failed to register AI workflow endpoints:', error.message);
+}
+
+// Initialize Precision Engine
+initializePrecisionEngine().then(success => {
+  if (success) {
+    console.log('[SERVER] Requirements Precision Engine initialized successfully');
+  } else {
+    console.warn('[SERVER] Failed to initialize Requirements Precision Engine');
+  }
+});
+
 // Handle enabler reparenting by updating capability enabler lists
 async function handleEnablerReparenting(enablerId, enablerName, oldCapabilityId, newCapabilityId) {
   try {
@@ -3088,6 +3212,115 @@ app.get('*', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+// Performance monitoring endpoints
+app.get('/api/performance/cache', (req, res) => {
+  try {
+    const stats = cacheManager.getStats();
+    res.json({
+      success: true,
+      cache: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+app.get('/api/performance/pool', (req, res) => {
+  try {
+    const stats = requestPool.getStats();
+    res.json({
+      success: true,
+      pool: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+app.get('/api/performance/overview', (req, res) => {
+  try {
+    const cacheStats = cacheManager.getStats();
+    const poolStats = requestPool.getStats();
+
+    res.json({
+      success: true,
+      performance: {
+        cache: cacheStats,
+        requestPool: poolStats,
+        server: {
+          uptime: process.uptime(),
+          memoryUsage: process.memoryUsage(),
+          pid: process.pid
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  const health = {
+    status: 'healthy',
+    version: version.version,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    services: {
+      cache: cacheManager ? 'active' : 'inactive',
+      requestPool: requestPool ? 'active' : 'inactive'
+    }
+  };
+
+  res.json(health);
+});
+
+// Create HTTP server and initialize WebSocket
+const server = http.createServer(app);
+const realtimeServer = new RealtimeCollaborationServer();
+
+// Initialize WebSocket server
+realtimeServer.init(server);
+
+// Connect collaboration manager to WebSocket events
+collaborationManager.on('session_message', ({ sessionId, message }) => {
+  realtimeServer.sendToClient(sessionId, message);
+});
+
+server.listen(PORT, () => {
   console.log(`Anvil v${version.version} server running at http://localhost:${PORT}`);
+  console.log(`WebSocket server initialized for real-time collaboration`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  realtimeServer.shutdown();
+  collaborationManager.shutdown();
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  realtimeServer.shutdown();
+  collaborationManager.shutdown();
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
 });

@@ -1,0 +1,118 @@
+{
+  "timestamp": "2025-09-20T14:21:49.643Z",
+  "system": {
+    "nodeVersion": "v18.19.1",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "api": {
+    "features": {
+      "average": 6.909484000000001,
+      "min": 5.733486,
+      "max": 9.245868,
+      "median": 6.748691,
+      "p95": 9.245868,
+      "times": [
+        5.733486,
+        6.351107,
+        6.431178,
+        6.605054,
+        6.709204,
+        6.748691,
+        6.848728,
+        7.082502,
+        7.339022,
+        9.245868
+      ]
+    },
+    "status": {
+      "average": 14.031247099999998,
+      "min": 12.062831,
+      "max": 19.029977,
+      "median": 13.416919,
+      "p95": 19.029977,
+      "times": [
+        12.062831,
+        12.190875,
+        12.272176,
+        12.710209,
+        12.867163,
+        13.416919,
+        13.623442,
+        14.627903,
+        17.510976,
+        19.029977
+      ]
+    },
+    "singleFeature": {
+      "average": 5.7197672,
+      "min": 5.008239,
+      "max": 6.601546,
+      "median": 5.855062,
+      "p95": 6.601546,
+      "times": [
+        5.008239,
+        5.245697,
+        5.294049,
+        5.315306,
+        5.377894,
+        5.855062,
+        5.93968,
+        6.184697,
+        6.375502,
+        6.601546
+      ]
+    },
+    "featuresLoad": {
+      "totalTime": 0.088201282,
+      "requestsPerSecond": 566.8851842765732,
+      "averageResponseTime": 8.677912299999997,
+      "minResponseTime": 4.784786,
+      "maxResponseTime": 14.049567,
+      "p95ResponseTime": 11.762782,
+      "concurrent": 5,
+      "totalRequests": 50
+    },
+    "concurrentLoad": {
+      "totalTime": 0.130693893,
+      "requestsPerSecond": 765.1466928144837,
+      "averageResponseTime": 12.502462839999994,
+      "minResponseTime": 6.710394,
+      "maxResponseTime": 22.968681,
+      "p95ResponseTime": 17.465315,
+      "concurrent": 10,
+      "totalRequests": 100
+    },
+    "update": {
+      "average": 6.6674646,
+      "min": 6.005191,
+      "max": 7.150975,
+      "times": [
+        7.150975,
+        6.005191,
+        6.462454,
+        6.862482,
+        6.856221
+      ]
+    }
+  },
+  "frontend": {},
+  "summary": {},
+  "memory": {
+    "initial": {
+      "rss": 73068544,
+      "heapTotal": 18006016,
+      "heapUsed": 11986592,
+      "external": 3743662,
+      "arrayBuffers": 223032
+    },
+    "after20Requests": {
+      "rss": 73535488,
+      "heapTotal": 27967488,
+      "heapUsed": 11052088,
+      "external": 3730642,
+      "arrayBuffers": 209972
+    },
+    "difference": -934504
+  }
+}

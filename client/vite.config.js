@@ -13,6 +13,29 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../dist'
+    outDir: '../dist',
+    // Enable code splitting and bundle optimization
+    rollupOptions: {
+      output: {
+        // Manual chunks for better code splitting
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['lucide-react'],
+          markdown: ['marked'],
+          mermaid: ['mermaid'],
+          network: ['axios']
+        }
+      }
+    },
+    // Enable minification (esbuild is faster and included by default)
+    minify: 'esbuild',
+    // Generate source maps for production debugging
+    sourcemap: true,
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000
+  },
+  // Enable performance optimizations
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', 'lucide-react']
   }
 })
