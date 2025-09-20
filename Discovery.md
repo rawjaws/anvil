@@ -216,10 +216,59 @@ Requirements: [Functional and non-functional needs]
 - **Functional Requirements**: `FR-XXXXXX` (e.g., `FR-789012`)
 - **Non-Functional Requirements**: `NFR-XXXXXX` (e.g., `NFR-345678`)
 
-Where `XXXXXX` is a 6-digit unique number generated using:
-- Current timestamp (last 4 digits) + 2-digit random number
-- Automatic collision detection across entire project
-- Sequential fallback for edge cases (starting from 100000)
+#### ID Generation Algorithm (Standalone):
+**For projects without running Anvil server**, use this algorithm:
+
+1. **Generate Base Number**:
+   ```javascript
+   function generateSemiUniqueNumber() {
+     const now = Date.now();
+     const timeComponent = parseInt(now.toString().slice(-4));
+     const randomComponent = Math.floor(Math.random() * 100);
+     const combined = timeComponent * 100 + randomComponent;
+     return combined.toString().padStart(6, '0').slice(-6);
+   }
+   ```
+
+2. **Check for Collisions**:
+   - Scan all `.md` files in the project for existing IDs
+   - Look for patterns like `**ID**: CAP-123456` or `**ID**: ENB-654321`
+   - If collision found, increment by 1 and check again
+
+3. **Collision Detection Pattern**:
+   ```javascript
+   function findExistingIds(prefix) {
+     // Search all markdown files for: **ID**: {prefix}-XXXXXX
+     // Return array of found numeric IDs
+   }
+
+   function generateUniqueId(prefix) {
+     const existingIds = findExistingIds(prefix);
+     let attempts = 0;
+
+     while (attempts < 100) {
+       const newNumber = generateSemiUniqueNumber();
+       const newId = `${prefix}-${newNumber}`;
+
+       if (!existingIds.includes(newId)) {
+         return newId;
+       }
+       attempts++;
+       // Add small delay for different timestamp
+     }
+
+     // Fallback: sequential numbering from 100000
+     let sequentialNum = 100000;
+     while (existingIds.includes(`${prefix}-${sequentialNum}`)) {
+       sequentialNum++;
+     }
+     return `${prefix}-${sequentialNum}`;
+   }
+   ```
+
+4. **Usage Examples**:
+   - `generateUniqueId('CAP')` → `CAP-123456`
+   - `generateUniqueId('ENB')` → `ENB-654321`
 
 #### File Naming Convention:
 - **Capabilities**: `{numeric-id}-capability.md` (e.g., `123456-capability.md`)
@@ -229,27 +278,52 @@ Where `XXXXXX` is a 6-digit unique number generated using:
 
 #### File Placement Strategy for Claude Code:
 
-**For Capabilities:**
-- Place in the `specifications/` folder relative to where Discovery.md is located
-- If Discovery.md is at project root, create: `./specifications/{id}-capability.md`
-- If Discovery.md is in a subfolder, create: `./specifications/{id}-capability.md` relative to Discovery.md location
+**Standalone Project Discovery (No Anvil Server):**
 
-**For Enablers:**
-- **Primary Rule**: Always place enablers in the same directory as their parent capability
-- **Location Discovery**: Use the capability ID to find the parent capability file location
-- **Fallback**: If parent capability cannot be found, place in same `specifications/` folder as capabilities
+1. **Create specifications/ Directory**:
+   - Always create a `specifications/` folder relative to Discovery.md location
+   - If Discovery.md is at project root: `./specifications/`
+   - If Discovery.md is in subfolder: `./specifications/` relative to Discovery.md
 
-**Directory Structure Example:**
-```
-project-root/
-├── Discovery.md
-├── specifications/
-│   ├── 123456-capability.md        # User Management Capability
-│   ├── 654321-enabler.md          # Login System Enabler (child of 123456)
-│   ├── 789012-enabler.md          # Password Reset Enabler (child of 123456)
-│   ├── 345678-capability.md       # Data Processing Capability
-│   └── 901234-enabler.md          # Data Validation Enabler (child of 345678)
-```
+2. **For Capabilities**:
+   - Place in the `specifications/` folder
+   - Filename format: `{numeric-id}-capability.md`
+   - Example: `./specifications/123456-capability.md`
+
+3. **For Enablers**:
+   - **Primary Rule**: Always place enablers in same directory as parent capability
+   - **Discovery Method**: Scan specifications/ folder for capability file with matching ID
+   - **Fallback**: If parent capability not found, place in specifications/ folder
+   - Filename format: `{numeric-id}-enabler.md`
+
+4. **Directory Structure Example**:
+   ```
+   project-root/
+   ├── Discovery.md
+   ├── specifications/
+   │   ├── 123456-capability.md        # User Management Capability
+   │   ├── 654321-enabler.md          # Login System Enabler (child of 123456)
+   │   ├── 789012-enabler.md          # Password Reset Enabler (child of 123456)
+   │   ├── 345678-capability.md       # Data Processing Capability
+   │   └── 901234-enabler.md          # Data Validation Enabler (child of 345678)
+   ```
+
+5. **File Location Algorithm**:
+   ```javascript
+   function getCapabilityFilePath(capabilityId, discoveryMdPath) {
+     const discoveryDir = path.dirname(discoveryMdPath);
+     const specificationsDir = path.join(discoveryDir, 'specifications');
+     const numericId = capabilityId.replace('CAP-', '');
+     return path.join(specificationsDir, `${numericId}-capability.md`);
+   }
+
+   function getEnablerFilePath(enablerId, capabilityId, discoveryMdPath) {
+     const capabilityPath = getCapabilityFilePath(capabilityId, discoveryMdPath);
+     const capabilityDir = path.dirname(capabilityPath);
+     const numericId = enablerId.replace('ENB-', '');
+     return path.join(capabilityDir, `${numericId}-enabler.md`);
+   }
+   ```
 
 ### Using Templates:
 1. Start with capability-template.md for each identified capability
@@ -296,7 +370,90 @@ POST /api/discovery/create
 }
 ```
 
+### Standalone Discovery Workflow (No Anvil Server):
+
+**Step 1: Project Analysis and ID Generation**
+1. Read and analyze the project structure following the Discovery Guide
+2. For each capability identified:
+   - Generate unique ID using `generateUniqueId('CAP')`
+   - Check for collisions by scanning existing markdown files
+   - Create capability document using numeric filename format
+
+3. For each enabler identified:
+   - Generate unique ID using `generateUniqueId('ENB')`
+   - Link to parent capability via `capabilityId` metadata
+   - Place in same directory as parent capability
+
+**Step 2: File Creation Process**
+1. Create `specifications/` directory relative to Discovery.md
+2. Create capability files first: `{numeric-id}-capability.md`
+3. Create enabler files in same directory: `{numeric-id}-enabler.md`
+4. Ensure proper metadata relationships between capabilities and enablers
+
+**Step 3: Document Templates**
+Use the Anvil template structure for consistency:
+
+**Capability Template Structure:**
+```markdown
+# [Capability Name]
+
+## Metadata
+- **Type**: Capability
+- **ID**: CAP-123456
+- **Name**: [Business Function Name]
+- **Status**: [Current State]
+- **Approval**: Not Approved
+- **Priority**: [High/Medium/Low]
+- **Owner**: [Team/Person]
+
+## Purpose
+[Clear business value statement]
+
+## Enablers
+| ID | Name | Status | Priority |
+|----|----|-----|---------|
+| ENB-654321 | [Enabler Name] | [Status] | [Priority] |
+
+[Rest of capability template...]
+```
+
+**Enabler Template Structure:**
+```markdown
+# [Enabler Name]
+
+## Metadata
+- **Type**: Enabler
+- **ID**: ENB-654321
+- **Name**: [Technical Component Name]
+- **Capability ID**: CAP-123456
+- **Status**: [Current State]
+- **Approval**: Not Approved
+- **Priority**: [High/Medium/Low]
+
+## Purpose
+[Technical function description]
+
+## Requirements
+### Functional Requirements
+| ID | Requirement | Status | Priority |
+|----|------------|--------|----------|
+| FR-789012 | [Requirement Description] | [Status] | [Priority] |
+
+[Rest of enabler template...]
+```
+
 ### Critical Rules for Claude Code:
+
+**For Standalone Discovery (No Server):**
+1. **Scan for existing IDs** - Always check all markdown files for ID collisions before creating new ones
+2. **Use numeric filename format** - Extract numeric part from full ID (remove CAP- or ENB- prefix)
+3. **Create specifications/ directory** - Always relative to Discovery.md location
+4. **Group enablers with capabilities** - Place enablers in same directory as parent capability
+5. **Maintain relationships** - Always specify capabilityId in enabler metadata
+6. **Follow collision detection** - Use provided algorithm to ensure unique IDs
+7. **Create directory structure** - Ensure specifications/ folder exists before creating files
+
+**For Anvil Server Integration:**
 1. **Never hardcode IDs** - Always use the server's ID generation system
 2. **Always use numeric filename format** - Extract numeric part from full ID (remove CAP- or ENB- prefix)
 3. **Group enablers with capabilities** - Place enablers in same directory as parent capability
