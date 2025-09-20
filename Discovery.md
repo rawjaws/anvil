@@ -208,23 +208,106 @@ Requirements: [Functional and non-functional needs]
 
 ## Integration with Anvil
 
+### File Naming and ID Generation Schema
+
+#### Unique ID Format:
+- **Capabilities**: `CAP-XXXXXX` (e.g., `CAP-123456`)
+- **Enablers**: `ENB-XXXXXX` (e.g., `ENB-654321`)
+- **Functional Requirements**: `FR-XXXXXX` (e.g., `FR-789012`)
+- **Non-Functional Requirements**: `NFR-XXXXXX` (e.g., `NFR-345678`)
+
+Where `XXXXXX` is a 6-digit unique number generated using:
+- Current timestamp (last 4 digits) + 2-digit random number
+- Automatic collision detection across entire project
+- Sequential fallback for edge cases (starting from 100000)
+
+#### File Naming Convention:
+- **Capabilities**: `{numeric-id}-capability.md` (e.g., `123456-capability.md`)
+- **Enablers**: `{numeric-id}-enabler.md` (e.g., `654321-enabler.md`)
+
+**Important**: Do NOT use prefixes like `cap-` or `enb-` in filenames. The numeric ID extracted from the full ID (removing `CAP-` or `ENB-` prefix) is used directly.
+
+#### File Placement Strategy for Claude Code:
+
+**For Capabilities:**
+- Place in the `specifications/` folder relative to where Discovery.md is located
+- If Discovery.md is at project root, create: `./specifications/{id}-capability.md`
+- If Discovery.md is in a subfolder, create: `./specifications/{id}-capability.md` relative to Discovery.md location
+
+**For Enablers:**
+- **Primary Rule**: Always place enablers in the same directory as their parent capability
+- **Location Discovery**: Use the capability ID to find the parent capability file location
+- **Fallback**: If parent capability cannot be found, place in same `specifications/` folder as capabilities
+
+**Directory Structure Example:**
+```
+project-root/
+├── Discovery.md
+├── specifications/
+│   ├── 123456-capability.md        # User Management Capability
+│   ├── 654321-enabler.md          # Login System Enabler (child of 123456)
+│   ├── 789012-enabler.md          # Password Reset Enabler (child of 123456)
+│   ├── 345678-capability.md       # Data Processing Capability
+│   └── 901234-enabler.md          # Data Validation Enabler (child of 345678)
+```
+
 ### Using Templates:
 1. Start with capability-template.md for each identified capability
 2. Use enabler-template.md for each identified enabler
 3. Fill in discovered information following template structure
 4. Ensure all metadata fields are completed accurately
+5. **Critical**: Use proper ID generation and filename conventions
 
 ### Workflow Integration:
 1. Create capabilities first to establish high-level structure
-2. Create enablers and link them to parent capabilities
-3. Update capability enabler tables with discovered enablers
-4. Review and validate all relationships and dependencies
-5. Assess implementation status and set development priorities
+2. Create enablers and link them to parent capabilities using proper IDs
+3. Place enablers in same directory as their parent capability
+4. Update capability enabler tables with discovered enabler IDs
+5. Review and validate all relationships and dependencies
+6. Assess implementation status and set development priorities
+
+### API Integration for Claude Code:
+When creating documents programmatically through Anvil's API:
+
+```javascript
+// For creating a capability
+POST /api/discovery/create
+{
+  "type": "capability",
+  "documentData": {
+    "id": "CAP-123456",  // Auto-generated unique ID
+    "name": "User Management",
+    // ... other fields
+  }
+}
+
+// For creating an enabler with capability context
+POST /api/discovery/create
+{
+  "type": "enabler",
+  "documentData": {
+    "id": "ENB-654321",  // Auto-generated unique ID
+    "name": "Login System",
+    "capabilityId": "CAP-123456"  // Link to parent capability
+  },
+  "context": {
+    "parentCapabilityPath": "/path/to/123456-capability.md"  // Optional: explicit path
+  }
+}
+```
+
+### Critical Rules for Claude Code:
+1. **Never hardcode IDs** - Always use the server's ID generation system
+2. **Always use numeric filename format** - Extract numeric part from full ID (remove CAP- or ENB- prefix)
+3. **Group enablers with capabilities** - Place enablers in same directory as parent capability
+4. **Check for collisions** - Server automatically prevents duplicate IDs across project
+5. **Maintain relationships** - Always specify capabilityId when creating enablers
 
 ### Continuous Discovery:
 - Update documentation as project evolves
 - Regular reviews to identify new capabilities/enablers
 - Refactor when capabilities become too complex
 - Split enablers when they become too broad
+- Maintain consistent ID and filename conventions
 
 This discovery process ensures that existing projects can be systematically analyzed and documented within Anvil's capability-driven framework, providing clear visibility into system architecture and enabling better planning for future development.
