@@ -1,7 +1,7 @@
 # Anvil
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Version](https://img.shields.io/badge/version-2.1.0-green.svg)]()
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)]()
 
 ## Overview
 
@@ -28,24 +28,6 @@ Product development has two distinct sides:
 - **Right Side (Technical Implementation)**: Technical Capabilities and Enablers - the domain of Engineers and Architects
 
 Anvil focuses exclusively on the right side, helping engineering teams define, organize, and manage the technical capabilities that enable product experiences. A new platform is coming soon for the left side that will marry **Experiences and Features** (Product Managers) with **Technical Capabilities and Enablers** (Engineers) to build the architectural runway needed to support exceptional user experiences.
-
-### Core Principles
-
-#### Components-Capabilities-Enablers-Requirements Model
-- **Components** are logical software systems or applications that contain capabilities
-- **Capabilities** represent high-level business functions within components that deliver value to users
-- **Enablers** are technical implementations that realize capabilities through specific functionality
-- **Requirements** define specific functional and non-functional needs within enablers
-
-#### Quality and Governance
-- All development follows strict approval workflows
-- Pre-condition verification prevents bypassing of quality gates
-- State-based progression ensures proper task sequencing
-
-#### Documentation-First Approach
-- Specifications are created before implementation
-- Technical diagrams and designs guide development
-- All artifacts are version controlled and traceable
 
 ## Application Interface
 
@@ -96,16 +78,9 @@ Once you have your specifications ready in Anvil:
    claude
    ```
 
-3. **Implementation Commands**:
-
-   **For Discovery (Documentation Only):**
+3. **Implementation Command**:
    ```
-   Claude, please read the SOFTWARE_DEVELOPMENT_PLAN.md and perform DISCOVERY ONLY on this project. Create specifications documentation but DO NOT implement anything.
-   ```
-
-   **For Implementation (After Discovery Complete):**
-   ```
-   Claude, please read the SOFTWARE_DEVELOPMENT_PLAN.md and develop the application specified in the specifications folder.
+   Please implement this application by looking in the specifications folder and following the development plan closely.
    ```
 
 ## Implementation Workflow
@@ -256,42 +231,6 @@ Anvil supports **workspace-based configuration** for managing multiple document 
 - **mermaid**: Diagram rendering
 
 ## Release Notes & Version History
-
-### v2.1.0 - System Architecture Visualization & Technical Specifications Template Bug Fixes ✅
-
-#### 🎯 **System Architecture Visualization Improvements**
-- **ARCHITECTURE DIAGRAM REDESIGN**: Updated RelationshipDiagram.jsx to show only capability-to-capability dependencies, removing enabler clutter for cleaner system visualization
-- **DEPENDENCY LABELING**: Added clear "Upstream Dependency" and "Downstream Impact" labels to show directional relationships between capabilities
-- **90-DEGREE ANGLES**: Improved diagram layout with basis curve type for cleaner, more professional architecture diagrams
-- **SYSTEM BOUNDARIES**: Fixed system grouping boundaries to properly organize capabilities by system and component
-
-#### 🛠️ **Critical Bug Fixes**
-- **TECHNICAL SPECIFICATIONS DUPLICATION FIX**: Resolved critical bug where saving capabilities/enablers would create duplicate "Technical Specifications (Template)" sections every time
-- **TEMPLATE PRESERVATION LOGIC**: Implemented proper logic to preserve existing Technical Specifications content while only adding templates for completely new documents
-- **JAVASCRIPT SYNTAX FIXES**: Fixed malformed if-else blocks in markdownUtils.js that were causing build failures with "Failed to parse source for import analysis" errors
-
-#### ✨ **Navigation Enhancement**
-- **IMPLEMENTED STATUS INDICATORS**: Added yellow lightning bolt icons (⚡) for capabilities and enablers with "Implemented" status in the navigation sidebar
-- **VISUAL STATUS DISTINCTION**: Implemented items now show bright yellow (#fbbf24) lightning bolts instead of hollow ones, with sparkle (✨) indicators
-- **CSS STYLING**: Added comprehensive styling for implemented status with proper icon coloring and hover effects
-
-#### 🗂️ **Example Project Enhancements**
-- **HELLO WORLD SPECIFICATIONS**: Created comprehensive example specifications in examples/hello-world/ including:
-  - **CAP-230875**: Web Application capability with technical specifications and dependency flow diagrams
-  - **ENB-678403**: Javascript Node Application enabler with functional/non-functional requirements
-  - **Additional Enablers**: Application Lifecycle Logging, Display Hello World functionality, and more
-- **FUNCTIONAL REQUIREMENTS**: Added detailed FR tables with proper requirements (Web Server, Root Route, Static Files, Graceful Shutdown, Launch Script)
-- **NON-FUNCTIONAL REQUIREMENTS**: Specified technical constraints (Port 4443) and performance requirements
-
-#### 🔧 **Infrastructure & Developer Experience**
-- **GITIGNORE UPDATES**: Added backup directory patterns to prevent accidental commits of backup files (examples/*/backup/, **/backup/, *.backup)
-- **CLIENT BUILD OPTIMIZATION**: Improved build process and resolved JavaScript syntax issues that were blocking successful builds
-- **TEMPLATE SYSTEM**: Enhanced template generation logic to work correctly with the new preservation system
-
-#### 📋 **Documentation & Development Standards**
-- **TECHNICAL SPECIFICATIONS WORKFLOW**: Clarified workflow where AI looks for "(Template)" text and replaces it with actual content during design phase
-- **STATUS MANAGEMENT**: Improved status field handling throughout the application for better workflow tracking
-- **METADATA CONSISTENCY**: Enhanced metadata field consistency across all document types
 
 ### v2.0.0 - Claude Code AI Subagent System ✅
 
