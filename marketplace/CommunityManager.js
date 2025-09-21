@@ -815,6 +815,13 @@ class CommunityManager {
         score -= warnings.length * 5;
         return Math.max(0, score);
     }
+
+    /**
+     * Set recommendation engine for integration
+     */
+    setRecommendationEngine(recommendationEngine) {
+        this.recommendationEngine = recommendationEngine;
+    }
 }
 
 module.exports = CommunityManager;

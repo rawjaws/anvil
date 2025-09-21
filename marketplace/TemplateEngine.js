@@ -722,6 +722,13 @@ This enabler follows a ${complexity === 'high' ? 'microservices' : 'modular mono
             throw new Error(`Failed to load template: ${error.message}`);
         }
     }
+
+    /**
+     * Set community manager for integration
+     */
+    setCommunityManager(communityManager) {
+        this.communityManager = communityManager;
+    }
 }
 
 module.exports = TemplateEngine;

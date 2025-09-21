@@ -15,7 +15,8 @@ export default function Sidebar() {
     navigationHistory,
     goBack,
     clearHistory,
-    loading
+    loading,
+    templates = []
   } = useApp()
   
   const [expandedSections, setExpandedSections] = useState({
@@ -47,12 +48,21 @@ export default function Sidebar() {
   }
 
   const handleEnablerClick = (enabler) => {
-    setSelectedDocument({ 
-      type: 'enabler', 
-      path: enabler.path, 
+    setSelectedDocument({
+      type: 'enabler',
+      path: enabler.path,
       id: enabler.id || enabler.title || enabler.path
     })
     navigate(`/view/enabler/${enabler.path}`)
+  }
+
+  const handleTemplateClick = (template) => {
+    setSelectedDocument({
+      type: 'template',
+      path: template.path,
+      id: template.id || template.title || template.path
+    })
+    navigate(`/edit/template/${template.path}`)
   }
 
 
@@ -261,7 +271,7 @@ export default function Sidebar() {
           onClick={() => toggleSection('tools')}
         >
           {expandedSections.tools ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>The Blacksmith's Arsenal</span>
+          <span>AI Tools</span>
         </div>
 
         {expandedSections.tools && (
@@ -271,28 +281,35 @@ export default function Sidebar() {
               onClick={() => navigate('/validation')}
             >
               <Shield size={16} />
-              <span>Sir Lancelot's Blade</span>
+              <span>Requirements Precision</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/analytics')}
             >
               <BarChart3 size={16} />
-              <span>Morgana's Crystal Ball</span>
+              <span>Advanced Analytics</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/agents')}
             >
               <Bot size={16} />
-              <span>Knights of the Round Table</span>
+              <span>Agent Dashboard</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/discovery')}
             >
               <Search size={16} />
-              <span>Sir Percival's Quest</span>
+              <span>Discovery</span>
+            </div>
+            <div
+              className="sidebar-item"
+              onClick={() => navigate('/intelligence')}
+            >
+              <Bot size={16} />
+              <span>Oracle Intelligence</span>
             </div>
           </div>
         )}
@@ -305,7 +322,7 @@ export default function Sidebar() {
           onClick={() => toggleSection('features')}
         >
           {expandedSections.features ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>Camelot's Library</span>
+          <span>Marketplace & Features</span>
         </div>
 
         {expandedSections.features && (
@@ -315,21 +332,21 @@ export default function Sidebar() {
               onClick={() => navigate('/marketplace')}
             >
               <ShoppingCart size={16} />
-              <span>Browse Scrolls</span>
+              <span>Browse Templates</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/marketplace/generate')}
             >
               <Activity size={16} />
-              <span>Forge New Scroll</span>
+              <span>Generate Template</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/marketplace/community')}
             >
               <Layers size={16} />
-              <span>Royal Court</span>
+              <span>Community Hub</span>
             </div>
             <div
               className="sidebar-item"
