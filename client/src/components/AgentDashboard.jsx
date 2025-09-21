@@ -318,11 +318,11 @@ const AgentDashboard = () => {
         </button>
       </div>
 
-      <div className="agent-notice">
-        <AlertCircle size={20} />
+      <div className="agent-notice success">
+        <CheckCircle size={20} />
         <p className="agent-notice-text">
-          <strong>Feature Not Yet Implemented:</strong> The Knights of the Round Table are currently gathering their strength.
-          Noble knight management and quest automation will be available in a future release.
+          <strong>Knights of the Round Table Ready:</strong> The noble knights have assembled and are ready for action.
+          Agent orchestration and quest automation are fully operational.
         </p>
       </div>
 
