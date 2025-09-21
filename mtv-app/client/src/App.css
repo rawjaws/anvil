@@ -1,0 +1,216 @@
+/* STV (Steph TV) - TOTALLY RADICAL 90s VIBES! 📺✨ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --stv-neon-pink: #FF0080;      /* Electric neon pink */
+  --stv-cyber-blue: #00FFFF;     /* Radical cyan */
+  --stv-lime-green: #00FF00;     /* Electric lime */
+  --stv-purple: #8A2BE2;         /* Cosmic purple */
+  --stv-gold: #FFD700;           /* Metallic gold */
+  --stv-retro-gradient: linear-gradient(45deg, #FF0080, #00FFFF, #00FF00, #8A2BE2);
+  --stv-glow: 0 0 30px rgba(255, 0, 128, 0.8);
+  --stv-text-shadow: 2px 2px 0px #000, 4px 4px 10px rgba(255, 0, 128, 0.5);
+  --stv-chunky-border: 4px solid #00FFFF;
+  --stv-retro-shadow: 6px 6px 0px #8A2BE2, 12px 12px 20px rgba(255, 0, 128, 0.3);
+}
+
+.app {
+  height: 100vh;
+  width: 100vw;
+  background:
+    radial-gradient(circle at 20% 80%, #FF0080 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, #00FFFF 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, #8A2BE2 0%, transparent 50%),
+    linear-gradient(135deg, #000428, #004e92);
+  color: white;
+  font-family: 'Orbitron', 'Arial', sans-serif;
+  overflow: hidden;
+  position: relative;
+  animation: retroPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes retroPulse {
+  0% { filter: hue-rotate(0deg) saturate(1); }
+  100% { filter: hue-rotate(10deg) saturate(1.1); }
+}
+
+.app::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--stv-gradient);
+  opacity: 0.1;
+  z-index: 0;
+}
+
+/* STV Brand Experience - Designed for Steph's Viewing Pleasure */
+
+.app-main {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Removed footer for immersive STV experience */
+
+.loading-screen, .error-screen {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 2rem;
+  background:
+    radial-gradient(circle at 25% 25%, #FF0080 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, #00FFFF 0%, transparent 50%),
+    linear-gradient(135deg, #000428, #004e92);
+  color: white;
+  font-family: 'Fredoka One', cursive;
+}
+
+.loading-screen h1, .error-screen h1 {
+  font-size: 4rem;
+  background: var(--stv-retro-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: var(--stv-text-shadow);
+  animation: neonFlicker 2s ease-in-out infinite alternate;
+  margin: 0;
+  letter-spacing: 0.1em;
+}
+
+.loading-screen h2, .error-screen h2 {
+  font-size: 1.8rem;
+  color: var(--stv-cyber-blue);
+  text-shadow: 2px 2px 0px #000, 0 0 20px rgba(0, 255, 255, 0.8);
+  font-family: 'Orbitron', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+.loading-screen p, .error-screen p {
+  font-size: 1.2rem;
+  color: var(--stv-lime-green);
+  text-shadow: 1px 1px 0px #000, 0 0 15px rgba(0, 255, 0, 0.6);
+  font-family: 'Orbitron', monospace;
+}
+
+@keyframes neonFlicker {
+  0%, 100% { text-shadow: 0 0 5px #FF0080, 0 0 10px #FF0080, 0 0 15px #FF0080; }
+  50% { text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF; }
+}
+
+@keyframes textGlow {
+  0% { text-shadow: 2px 2px 0px #000, 0 0 20px rgba(0, 255, 255, 0.8); }
+  100% { text-shadow: 2px 2px 0px #000, 0 0 30px rgba(0, 255, 255, 1), 0 0 40px rgba(0, 255, 255, 0.5); }
+}
+
+.loading-spinner {
+  width: 120px;
+  height: 120px;
+  border: 8px solid rgba(255, 255, 255, 0.2);
+  border-top: 8px solid var(--stv-neon-pink);
+  border-right: 8px solid var(--stv-cyber-blue);
+  border-bottom: 8px solid var(--stv-lime-green);
+  border-left: 8px solid var(--stv-purple);
+  border-radius: 50%;
+  animation: spin 1s linear infinite, pulsePink 2s ease-in-out infinite;
+  box-shadow: var(--stv-glow), 0 0 60px rgba(0, 255, 255, 0.4);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulsePink {
+  0%, 100% { filter: hue-rotate(0deg) saturate(1); }
+  50% { filter: hue-rotate(90deg) saturate(1.5); }
+}
+
+.error-screen button, .no-video button {
+  background: var(--stv-retro-gradient);
+  border: var(--stv-chunky-border);
+  color: white;
+  padding: 1.5rem 3rem;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-family: 'Fredoka One', cursive;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: var(--stv-retro-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.error-screen button::before, .no-video button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.error-screen button:hover, .no-video button:hover {
+  background: var(--stv-neon-pink);
+  border-color: var(--stv-lime-green);
+  box-shadow: 8px 8px 0px #00FFFF, 16px 16px 30px rgba(255, 0, 128, 0.5);
+  transform: translateY(-4px) scale(1.1);
+  animation: buttonPulse 0.3s ease-in-out;
+}
+
+.error-screen button:hover::before, .no-video button:hover::before {
+  left: 100%;
+}
+
+@keyframes buttonPulse {
+  0%, 100% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(180deg); }
+}
+
+.no-video {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  background:
+    radial-gradient(circle at 30% 70%, #8A2BE2 0%, transparent 50%),
+    radial-gradient(circle at 70% 30%, #FF0080 0%, transparent 50%),
+    linear-gradient(135deg, #000428, #004e92);
+  color: white;
+  font-family: 'Fredoka One', cursive;
+}
+
+.no-video h2 {
+  font-size: 3rem;
+  background: var(--stv-retro-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: var(--stv-text-shadow);
+  animation: neonFlicker 2s ease-in-out infinite alternate;
+  margin: 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+
+/* Clean STV experience - no header/footer responsive styles needed */

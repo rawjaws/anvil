@@ -1,59 +1,57 @@
-# Node Javascript Application
+# Auto-Playing Video Interface
 
 ## Metadata
-
-- **Name**: Node Javascript Application
+- **Name**: Auto-Playing Video Interface
 - **Type**: Enabler
-- **ID**: ENB-128923
-- **Capability ID**: CAP-993034
-- **Owner**: Product Team
-- **Status**: Ready for Implementation
-- **Approval**: Approved
+- **ID**: ENB-567002
+- **Capability ID**: CAP-567693 (MTV Music Video Streaming Application)
+- **Status**: In Draft
+- **Approval**: Pending
 - **Priority**: High
-- **Analysis Review**: Not Required
+- **Analysis Review**: Required
 - **Code Review**: Not Required
+- **Owner**: Product Team
+- **Developer**: [Development Team/Lead]
+- **Created Date**: 2025-09-21
+- **Last Updated**: 2025-09-21
+- **Version**: 1.0
 
 ## Technical Overview
 ### Purpose
-A NodeJS Javascript application
+Create a seamless auto-playing video interface that continuously streams music videos in a television-like experience. This enabler provides the core user interface and playback functionality that delivers the classic MTV viewing experience.
 
 ## Functional Requirements
 
 | ID | Name | Requirement | Priority | Status | Approval |
 |----|------|-------------|----------|--------|----------|
-| FR-484109 | Launch Script | Provide a nice launch script | Must Have | Ready for Implementation | Approved |
+| FR-567002-01 | Continuous Video Playback | Implement seamless auto-play between videos without user interaction | Must Have | In Draft | Pending |
+| FR-567002-02 | Video Player Integration | Integrate HTML5 video player with custom controls and MTV-style branding | Must Have | In Draft | Pending |
+| FR-567002-03 | Playlist Management | Manage dynamic playlist with queue, history, and next video prediction | Should Have | In Draft | Pending |
+| FR-567002-04 | Now Playing Display | Show current video information (title, artist, duration) with MTV-style overlay | Must Have | In Draft | Pending |
+| FR-567002-05 | User Playback Controls | Provide play/pause, volume, and skip controls while maintaining auto-play flow | Should Have | In Draft | Pending |
+| FR-567002-06 | Video Loading States | Handle video loading, buffering, and error states gracefully | Must Have | In Draft | Pending |
 
 ## Non-Functional Requirements
 
 | ID | Name | Type | Requirement | Priority | Status | Approval |
 |----|------|------|-------------|----------|--------|----------|
-| NFR-134044 | Port | Technical Constraint | Host the application on port 4443 | Must Have | Ready for Implementation | Approved |
-| NFR-931270 | Cross-Platform Support | Portability | Run on Windows, Mac, Linux | Must Have | Ready for Design | Approved |
-| NFR-790014 | Download Dependencies | Maintainability | Download the dependencies needed | Must Have | Ready for Implementation | Approved |
+| NFR-567002-01 | Playback Performance | Performance | Smooth video playback with minimal buffering and fast transitions | Must Have | In Draft | Pending |
+| NFR-567002-02 | Cross-Browser Support | Compatibility | Support modern browsers (Chrome, Firefox, Safari, Edge) | Must Have | In Draft | Pending |
+| NFR-567002-03 | Video Quality Adaptation | Performance | Automatically adapt video quality based on connection speed | Should Have | In Draft | Pending |
+| NFR-567002-04 | User Experience | Usability | Maintain MTV-style visual identity with smooth animations | Should Have | In Draft | Pending |
+| NFR-567002-05 | Error Recovery | Reliability | Automatically skip failed videos and continue playback | Must Have | In Draft | Pending |
 
 # Technical Specifications
-
-## System Overview
-Node.js Express application serving the Hello World web application with the following technical specifications:
-
-### Server Configuration
-- **Framework**: Express.js
-- **Port**: 4443 (NFR-134044)
-- **Static Files**: Serve React build output
-- **Dependencies**: Auto-install via npm (NFR-790014)
-
-### Launch System
-- **Cross-Platform Scripts**: Batch file for Windows, shell script for Mac/Linux (FR-484109)
-- **Development Mode**: npm scripts for development and production
-- **Dependency Management**: Automatic installation of all required packages
 
 ## API Technical Specifications
 
 | API Type | Operation | Channel / Endpoint | Description | Request / Publish Payload | Response / Subscribe Data |
 |----------|-----------|---------------------|-------------|----------------------------|----------------------------|
-| **Static** | GET | `/` | Serve React app index.html | N/A | HTML page |
-| Static | GET | `/static/*` | Serve React build assets | N/A | JS/CSS/Image files |
-| Health | GET | `/health` | Health check endpoint | N/A | `{"status": "ok"}` |
+| **REST** | POST | `/api/v1/player/play` | Start/resume video playback | {videoId, position} | Playback status |
+| REST | POST | `/api/v1/player/pause` | Pause video playback | {videoId, position} | Playback status |
+| REST | POST | `/api/v1/player/next` | Skip to next video | {currentVideoId} | Next video info |
+| REST | GET | `/api/v1/player/status` | Get current playback status | N/A | Current status and video info |
+| REST | POST | `/api/v1/player/seek` | Seek to specific time | {videoId, position} | Updated position |
 
 ## Technical Drawings
 
@@ -62,319 +60,249 @@ Node.js Express application serving the Hello World web application with the fol
 ```mermaid
 flowchart TD
     %% Current Capability Enablers
-    ENB128923["ENB-128923<br/>Node JavaScript Application<br/>🖥️"]
-    ENB424964["ENB-424964<br/>Display Hello World<br/>🌐"]
-
-    %% External Systems
-    BROWSER([User Browser])
-    NPM([NPM Registry])
+    ENB567001["ENB-567001<br/>Video Content API Integration<br/>🎥"]
+    ENB567002["ENB-567002<br/>Auto-Playing Video Interface<br/>▶️"]
+    ENB567003["ENB-567003<br/>Popular Music Curation<br/>🎵"]
+    ENB567004["ENB-567004<br/>Mobile-Responsive Design<br/>📱"]
 
     %% Dependencies Flow
-    NPM -->|Dependencies| ENB128923
-    ENB128923 -->|Serves| ENB424964
-    ENB424964 -->|Displays| BROWSER
+    ENB567001 --> ENB567002
+    ENB567003 --> ENB567002
+    ENB567002 --> ENB567004
 
     %% Styling
     classDef current fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef external fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef dependency fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
 
-    class ENB128923,ENB424964 current
-    class BROWSER,NPM external
+    class ENB567002 current
+    class ENB567001,ENB567003,ENB567004 dependency
 
     %% Capability Grouping
-    subgraph CAP993034 ["CAP-993034: Display Hello World"]
-        ENB128923
-        ENB424964
+    subgraph CAP567693 ["MTV Music Video App"]
+        ENB567001
+        ENB567002
+        ENB567003
+        ENB567004
     end
 ```
 
 ### Data Models
 ```mermaid
 erDiagram
-    Entity {
+    PlaybackSession {
         string id PK
-        string name
-        string identifier UK
-        datetime created_at
-        datetime updated_at
-    }
-    EntityProfile {
-        string entity_id PK,FK
-        string description
-        string metadata_url
-        json configuration
-    }
-    Request {
-        string id PK
-        string entity_id FK
-        decimal value
+        string user_id
+        string current_video_id FK
+        int current_position
+        datetime started_at
+        datetime last_updated
         string status
-        datetime request_date
     }
-    RequestItem {
+    VideoQueue {
         string id PK
-        string request_id FK
-        string component_id FK
-        int quantity
-        decimal unit_cost
+        string session_id FK
+        string video_id FK
+        int queue_position
+        datetime added_at
+        string status
     }
-    Component {
+    PlaybackHistory {
         string id PK
-        string name
-        decimal cost
-        int available_quantity
-        string type
+        string session_id FK
+        string video_id FK
+        int watch_duration
+        datetime played_at
+        boolean completed
     }
-    ComponentType {
-        string id PK
-        string name
-        string description
-    }
-    Label {
-        string id PK
-        string name
-        string color
-    }
-    ComponentLabel {
-        string component_id PK,FK
-        string label_id PK,FK
-        datetime assigned_at
-    }
-    
-    %% All 7 Mermaid ER Relationship Types:
-    Entity ||--|| EntityProfile : "one-to-one"
-    Entity ||--o{ Request : "one-to-zero-or-many"
-    Request ||--|{ RequestItem : "one-to-one-or-many"
-    RequestItem }|--|| Component : "many-to-one"
-    Component }o--|| ComponentType : "zero-or-many-to-one"
-    Component }|--|{ Label : "many-to-many (via junction)"
-    Entity }o--o{ Component : "zero-or-many-to-zero-or-many"
+
+    PlaybackSession ||--o{ VideoQueue : "has queue"
+    PlaybackSession ||--o{ PlaybackHistory : "tracks history"
 ```
 
 ### Class Diagrams
 ```mermaid
 classDiagram
-    %% Abstract Base Class
-    class BaseEntity {
-        <<abstract>>
-        +String id
-        +DateTime createdAt
-        +DateTime updatedAt
-        +validate()* bool
-        +save() bool
-        +delete() bool
+    class VideoPlayer {
+        -HTMLVideoElement videoElement
+        -PlaybackState currentState
+        -VideoQueue queue
+        +play() Promise~void~
+        +pause() void
+        +seekTo(position) void
+        +setVolume(level) void
+        +loadVideo(videoId) Promise~void~
+        +onVideoEnd() void
+        +onError(error) void
     }
-    
-    %% Interface
-    class IProcessor {
-        <<interface>>
-        +processRequest(data, options)* Result
-        +validateRequest(requestId)* ValidationResult
-        +getStatus(requestId)* Status
+
+    class PlaybackController {
+        -VideoPlayer player
+        -PlaylistManager playlist
+        -EventEmitter events
+        +startAutoPlay() void
+        +stopAutoPlay() void
+        +nextVideo() Promise~Video~
+        +previousVideo() Promise~Video~
+        +handleVideoEnd() void
+        +handlePlaybackError(error) void
     }
-    
-    %% Concrete Classes
-    class Entity {
-        -String identifier
-        -String name
-        #String type
-        +authenticate(credentials) bool
-        +updateData(data) bool
-        +getRelatedItems() List~Item~
+
+    class PlaylistManager {
+        -Video[] currentPlaylist
+        -int currentIndex
+        -PlaybackHistory history
+        +getCurrentVideo() Video
+        +getNextVideo() Video
+        +getPreviousVideo() Video
+        +addToHistory(video) void
+        +updateQueue() Promise~void~
     }
-    
-    class Item {
-        -String entityId
-        -Decimal value
-        -ItemStatus status
-        -List~Component~ components
-        +addComponent(component, quantity) void
-        +removeComponent(componentId) void
-        +calculateTotal() Decimal
-        +processItem() bool
+
+    class UIController {
+        -HTMLElement playerContainer
+        -PlaybackControls controls
+        -VideoInfo display
+        +showVideoInfo(video) void
+        +updateProgress(position, duration) void
+        +showBuffering() void
+        +hideBuffering() void
+        +showError(message) void
     }
-    
-    class Component {
-        +String name
-        +Decimal cost
-        +Integer quantity
-        +String category
-        +updateQuantity(amount) bool
-        +isAvailable() bool
-    }
-    
-    class Service {
-        -String configKey
-        -String environment
-        +processItem(item) Result
-        +handleCallback(data) void
-    }
-    
-    %% Enumeration
-    class ItemStatus {
+
+    class PlaybackState {
         <<enumeration>>
-        PENDING
-        ACTIVE
-        PROCESSING
-        COMPLETED
-        CANCELLED
+        STOPPED
+        PLAYING
+        PAUSED
+        BUFFERING
+        ERROR
     }
-    
-    %% Relationships with multiplicities and labels
-    BaseEntity <|-- Entity : inherits
-    BaseEntity <|-- Item : inherits  
-    BaseEntity <|-- Component : inherits
-    IProcessor <|.. Service : implements
-    Entity "1" --> "0..*" Item : manages
-    Item "1" --> "1..*" Component : contains
-    Item *-- ItemStatus : "has status"
-    Service ..> Item : processes
-    Entity --> Component : accesses
-    
-    %% Notes
-    note for Entity "Entities must be validated\nbefore processing items"
-    note for Service "Configurable service\nfor item processing"
+
+    VideoPlayer --> PlaybackController : controlled by
+    PlaybackController --> PlaylistManager : uses
+    PlaybackController --> UIController : updates
+    VideoPlayer *-- PlaybackState : has state
 ```
+
 ### Sequence Diagrams
 ```mermaid
 sequenceDiagram
-    participant User
-    participant API
-    participant Service
-    participant Database
-    
-    User->>API: Request
-    API->>Service: Process Request
-    Service->>Database: Query/Update
-    Database-->>Service: Result
-    Service-->>API: Response
-    API-->>User: Final Response
+    participant User as User Browser
+    participant UI as UI Controller
+    participant PC as Playback Controller
+    participant VP as Video Player
+    participant PM as Playlist Manager
+
+    User->>UI: Load MTV App
+    UI->>PC: initializePlayer()
+    PC->>PM: loadInitialPlaylist()
+    PM-->>PC: Playlist loaded
+    PC->>VP: loadVideo(firstVideo)
+    VP-->>PC: Video loaded
+    PC->>VP: play()
+    VP-->>UI: playback started
+
+    loop Auto-play cycle
+        VP->>PC: onVideoEnd()
+        PC->>PM: getNextVideo()
+        PM-->>PC: nextVideo
+        PC->>VP: loadVideo(nextVideo)
+        VP-->>PC: Video loaded
+        PC->>VP: play()
+        VP-->>UI: Playing next video
+    end
+
+    Note over VP, PM: Continuous playback without user interaction
 ```
 
 ### Dataflow Diagrams
 ```mermaid
 flowchart TD
     %% External Entities
-    ExternalActor([External Actor])
-    ExternalService([External Service])
-    NotificationSystem([Notification System])
-    
+    User([User Browser])
+    VideoSource([Video Content API])
+
     %% Processes
-    ProcessRequest{Process Request}
-    ValidateData{Validate Data}
-    UpdateStorage{Update Storage}
-    SendResponse{Send Response}
-    
+    LoadVideo{Load Video}
+    PlayVideo{Play Video}
+    UpdateUI{Update User Interface}
+    ManageQueue{Manage Playlist Queue}
+
     %% Data Stores
-    PrimaryDB[(Primary Database)]
-    SecondaryDB[(Secondary Database)]  
-    ConfigDB[(Configuration Store)]
-    AuditDB[(Audit Logs)]
-    
-    %% Data Flows with Labels
-    ExternalActor -->|Initial Request| ProcessRequest
-    ProcessRequest -->|Data Query| PrimaryDB
-    PrimaryDB -->|Retrieved Data| ProcessRequest
-    
-    ProcessRequest -->|Validation Request| ValidateData
-    ValidateData -->|External Validation| ExternalService
-    ExternalService -->|Validation Result| ValidateData
-    
-    ValidateData -->|Processed Data| UpdateStorage
-    UpdateStorage -->|Storage Query| SecondaryDB
-    SecondaryDB -->|Current State| UpdateStorage
-    UpdateStorage -->|Updated State| SecondaryDB
-    
-    ValidateData -->|Confirmed Data| ConfigDB
-    ProcessRequest -->|Status Update| SendResponse
-    SendResponse -->|Notification Request| NotificationSystem
-    
-    %% Audit Trail
-    ProcessRequest -->|Activity Log| AuditDB
-    ValidateData -->|Validation Log| AuditDB
-    UpdateStorage -->|Change Log| AuditDB
-    
-    %% Return Flows
-    SendResponse -->|Response| ExternalActor
-    
+    PlaybackState[(Playback State)]
+    VideoQueue[(Video Queue)]
+    PlaybackHistory[(Playback History)]
+
+    %% Data Flows
+    User -->|User Action| UpdateUI
+    VideoSource -->|Video Data| LoadVideo
+    LoadVideo -->|Video Ready| PlayVideo
+    PlayVideo -->|Playback Events| UpdateUI
+
+    PlayVideo -->|Current State| PlaybackState
+    PlaybackState -->|State Data| UpdateUI
+
+    ManageQueue -->|Queue Updates| VideoQueue
+    VideoQueue -->|Next Video| LoadVideo
+    PlayVideo -->|Completed Video| PlaybackHistory
+
+    UpdateUI -->|Status Updates| User
+    ManageQueue -->|Auto-advance| LoadVideo
+
     %% Styling
     classDef external fill:#e1f5fe
     classDef process fill:#f3e5f5
     classDef datastore fill:#e8f5e8
-    
-    class ExternalActor,ExternalService,NotificationSystem external
-    class ProcessRequest,ValidateData,UpdateStorage,SendResponse process
-    class PrimaryDB,SecondaryDB,ConfigDB,AuditDB datastore
+
+    class User,VideoSource external
+    class LoadVideo,PlayVideo,UpdateUI,ManageQueue process
+    class PlaybackState,VideoQueue,PlaybackHistory datastore
 ```
 
 ### State Diagrams
 ```mermaid
 stateDiagram-v2
-    %% Enabler Lifecycle State Machine
-    [*] --> ReadyforAnalysis : Initialize Enabler
-    
-    ReadyforAnalysis --> InAnalysis : Begin Analysis
-    ReadyforAnalysis --> Retired : Cancel Early
-    
-    InAnalysis --> ReadyforAnalysisReview : Analysis Complete
-    InAnalysis --> ReadyforAnalysis : Return to Analysis
-    
-    ReadyforAnalysisReview --> InAnalysisReview : Begin Review
-    ReadyforAnalysisReview --> InAnalysis : Return to Analysis
-    
-    InAnalysisReview --> ReadyforDesign : Analysis Approved
-    InAnalysisReview --> InAnalysis : Analysis Rejected
-    
-    ReadyforDesign --> InDesign : Begin Design
-    ReadyforDesign --> ReadyforAnalysis : Return to Analysis
-    
-    InDesign --> ReadyforDesignReview : Design Complete
-    InDesign --> ReadyforDesign : Return to Design
-    
-    ReadyforDesignReview --> InDesignReview : Begin Review
-    ReadyforDesignReview --> InDesign : Return to Design
-    
-    InDesignReview --> ReadyforImplementation : Design Approved
-    InDesignReview --> InDesign : Design Rejected
-    
-    ReadyforImplementation --> InImplementation : Begin Implementation
-    ReadyforImplementation --> ReadyforDesign : Return to Design
-    
-    InImplementation --> Implemented : Implementation Complete
-    InImplementation --> ReadyforImplementation : Implementation Issues
-    
-    Implemented --> ReadyforRefactor : Refactoring Needed
-    Implemented --> ReadyforRetirement : End of Life
-    
-    ReadyforRefactor --> InRefactor : Begin Refactor
-    ReadyforRefactor --> Implemented : No Refactor Needed
-    
-    InRefactor --> Implemented : Refactor Complete
-    InRefactor --> ReadyforRefactor : Refactor Issues
-    
-    ReadyforRetirement --> InRetirement : Begin Retirement Process
-    ReadyforRetirement --> Implemented : Continue Usage
-    
-    InRetirement --> Retired : Retirement Complete
-    InRetirement --> ReadyforRetirement : Retirement Issues
-    
-    Retired --> [*]
-    
-    %% Notes
-    note right of InAnalysisReview : Review requirements\nand feasibility
-    note right of InDesignReview : Review technical\ndesign and architecture
-    note right of InImplementation : Active development\nand testing
-```
+    %% Video Player State Machine
+    [*] --> Initialized : Application Start
 
+    Initialized --> Loading : Load First Video
+    Loading --> Ready : Video Loaded Successfully
+    Loading --> Error : Load Failed
+
+    Ready --> Playing : Auto-play Start
+    Ready --> Error : Playback Error
+
+    Playing --> Paused : User Pause
+    Playing --> Buffering : Network Slow
+    Playing --> VideoEnded : Video Complete
+    Playing --> Error : Playback Error
+
+    Paused --> Playing : User Resume
+    Paused --> Loading : Skip to Next
+
+    Buffering --> Playing : Buffer Complete
+    Buffering --> Error : Buffer Failed
+
+    VideoEnded --> Loading : Load Next Video
+    VideoEnded --> [*] : Playlist Complete
+
+    Error --> Loading : Retry/Skip Video
+    Error --> [*] : Fatal Error
+
+    %% Notes
+    note right of Playing : Auto-advance to next video\nwhen current video ends
+    note right of Error : Automatically skip failed\nvideos and continue playlist
+```
 
 ## Dependencies
 ### Internal Dependencies
-- [Service/Component 1]: [Why needed]
-- [Service/Component 2]: [Why needed]
+- ENB-567001 (Video Content API Integration): Provides video metadata and sources
+- ENB-567003 (Popular Music Curation): Supplies curated playlist content
 
 ### External Dependencies
-- [Third-party service 1]: [Integration details]
-- [Third-party service 2]: [Integration details]
+- HTML5 Video API: For video playback functionality
+- Web Audio API: For volume control and audio processing
+- Browser media capabilities: For format support and hardware acceleration
 
 ---
 
@@ -439,7 +367,7 @@ stateDiagram-v2
 - **WORKFLOW HALT**: Do not proceed past failed pre-condition verification
 - **RESPONSE REQUIREMENT**: Must explicitly state "STOPPING due to failed pre-conditions" and explain which conditions failed
 
-### Perform Analysis 
+### Perform Analysis
 | Step | Action | Result |
 |------|--------|--------|
 | 1 | Verify pre-conditions | ALL must be met |
@@ -561,7 +489,7 @@ stateDiagram-v2
 | 2 | Update ALL Functional Requirements Status to "Implemented" |
 | 3 | Update ALL Non-Functional Requirements Status to "Implemented" |
 | 4 | Verify all requirements are marked "Implemented" |
-  
+
 ### Exit Criteria Checklist
 - [ ] Implementation completed for all approved requirements
   - [ ] ALL Functional Requirements Status = "Implemented"
@@ -668,5 +596,4 @@ stateDiagram-v2
 | Implementation | List of implemented requirements |
 
 ## Notes
-[Any additional context, assumptions, or open questions]
-
+This enabler provides the core viewing experience with continuous auto-play functionality. Special attention to smooth transitions and error handling will ensure a television-like experience for users.

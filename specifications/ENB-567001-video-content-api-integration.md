@@ -1,54 +1,54 @@
-# Display Hello World
+# Video Content API Integration
 
 ## Metadata
-
-- **Name**: Display Hello World
+- **Name**: Video Content API Integration
 - **Type**: Enabler
-- **ID**: ENB-424964
-- **Capability ID**: CAP-993034
-- **Owner**: Product Team
-- **Status**: Ready for Implementation
-- **Approval**: Approved
+- **ID**: ENB-567001
+- **Capability ID**: CAP-567693 (MTV Music Video Streaming Application)
+- **Status**: In Draft
+- **Approval**: Pending
 - **Priority**: High
-- **Analysis Review**: Not Required
+- **Analysis Review**: Required
 - **Code Review**: Not Required
+- **Owner**: Product Team
+- **Developer**: [Development Team/Lead]
+- **Created Date**: 2025-09-21
+- **Last Updated**: 2025-09-21
+- **Version**: 1.0
 
 ## Technical Overview
 ### Purpose
-Display Hello World in Javascript web application
+Integrate with YouTube Data API v3 to fetch and curate popular English-language music videos for continuous streaming. This enabler establishes the core content pipeline that provides the application with a steady stream of high-quality music videos.
 
 ## Functional Requirements
 
 | ID | Name | Requirement | Priority | Status | Approval |
 |----|------|-------------|----------|--------|----------|
-| FR-463546 | Display Hello World | Display Hello world and the user's name | Must Have | Ready for Implementation | Approved |
-| FR-341726 | Get User Name | Get the users name | Must Have | Ready for Implementation | Approved |
-| FR-634018 | Background | Background should be a nice blue | Must Have | Ready for Implementation | Approved |
+| FR-567001-01 | YouTube API Integration | Implement YouTube Data API v3 client to search and retrieve video metadata | Must Have | In Draft | Pending |
+| FR-567001-02 | Music Video Filtering | Filter search results to only include official music videos in English | Must Have | In Draft | Pending |
+| FR-567001-03 | Popular Content Curation | Retrieve trending and popular music videos based on view count and recency | Should Have | In Draft | Pending |
+| FR-567001-04 | Video Metadata Extraction | Extract essential video information (title, artist, duration, thumbnail) | Must Have | In Draft | Pending |
+| FR-567001-05 | Content Refresh Mechanism | Implement periodic refresh of video playlist to ensure fresh content | Should Have | In Draft | Pending |
 
 ## Non-Functional Requirements
 
 | ID | Name | Type | Requirement | Priority | Status | Approval |
 |----|------|------|-------------|----------|--------|----------|
-| | | | | | | |
+| NFR-567001-01 | API Rate Limiting | Performance | Respect YouTube API quotas and implement proper rate limiting | Must Have | In Draft | Pending |
+| NFR-567001-02 | Error Handling | Reliability | Graceful handling of API failures with fallback content | Must Have | In Draft | Pending |
+| NFR-567001-03 | Caching Strategy | Performance | Cache video metadata to reduce API calls and improve response times | Should Have | In Draft | Pending |
+| NFR-567001-04 | Content Quality | Quality | Ensure high-quality video sources (minimum 720p when available) | Should Have | In Draft | Pending |
 
 # Technical Specifications
 
-## User Interface Design
-React-based single page application with the following specifications:
-
-### Component Structure
-- **Main Component**: HelloWorld component displaying message and name
-- **User Input**: Text input field for user name (FR-341726)
-- **Display Area**: Hello World message with personalized greeting (FR-463546)
-- **Styling**: Blue background theme (FR-634018)
-
-### State Management
-- **User Name State**: React state to store user input
-- **Real-time Updates**: Display updates as user types
-
 ## API Technical Specifications
 
-Not Applicable - This is a client-side only component with no external API calls.
+| API Type | Operation | Channel / Endpoint | Description | Request / Publish Payload | Response / Subscribe Data |
+|----------|-----------|---------------------|-------------|----------------------------|----------------------------|
+| **REST** | GET | `/youtube/v3/search` | Search for music videos | Query parameters: part, q, type, videoCategoryId, order, maxResults | Video search results with metadata |
+| REST | GET | `/youtube/v3/videos` | Get detailed video information | Query parameters: part, id, maxResults | Detailed video metadata including statistics |
+| REST | GET | `/api/v1/videos/trending` | Get trending music videos | N/A | Curated list of trending videos |
+| REST | GET | `/api/v1/videos/refresh` | Refresh video playlist | N/A | Updated playlist confirmation |
 
 ## Technical Drawings
 
@@ -57,318 +57,191 @@ Not Applicable - This is a client-side only component with no external API calls
 ```mermaid
 flowchart TD
     %% Current Capability Enablers
-    ENB424964["ENB-424964<br/>Display Hello World<br/>🌐"]
-    ENB128923["ENB-128923<br/>Node JavaScript Application<br/>🖥️"]
+    ENB567001["ENB-567001<br/>Video Content API Integration<br/>🎥"]
+    ENB567002["ENB-567002<br/>Auto-Playing Video Interface<br/>▶️"]
+    ENB567003["ENB-567003<br/>Popular Music Curation<br/>🎵"]
 
-    %% User Interaction
-    USER([User Browser])
+    %% External Dependencies
+    YOUTUBE["YouTube Data API v3<br/>📺"]
 
     %% Dependencies Flow
-    ENB128923 -->|Serves HTML/CSS/JS| ENB424964
-    ENB424964 -->|Renders UI| USER
-    USER -->|Input Name| ENB424964
+    YOUTUBE --> ENB567001
+    ENB567001 --> ENB567003
+    ENB567003 --> ENB567002
 
     %% Styling
     classDef current fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     classDef external fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
 
-    class ENB424964,ENB128923 current
-    class USER external
+    class ENB567001,ENB567002,ENB567003 current
+    class YOUTUBE external
 
     %% Capability Grouping
-    subgraph CAP993034 ["CAP-993034: Display Hello World"]
-        ENB424964
-        ENB128923
+    subgraph CAP567693 ["MTV Music Video App"]
+        ENB567001
+        ENB567002
+        ENB567003
+    end
+
+    subgraph EXTERNAL ["External Services"]
+        YOUTUBE
     end
 ```
 
 ### Data Models
 ```mermaid
 erDiagram
-    Entity {
+    Video {
         string id PK
-        string name
-        string identifier UK
+        string youtube_id UK
+        string title
+        string artist
+        string thumbnail_url
+        int duration_seconds
+        int view_count
+        datetime published_at
         datetime created_at
         datetime updated_at
     }
-    EntityProfile {
-        string entity_id PK,FK
-        string description
-        string metadata_url
-        json configuration
-    }
-    Request {
-        string id PK
-        string entity_id FK
-        decimal value
-        string status
-        datetime request_date
-    }
-    RequestItem {
-        string id PK
-        string request_id FK
-        string component_id FK
-        int quantity
-        decimal unit_cost
-    }
-    Component {
-        string id PK
-        string name
-        decimal cost
-        int available_quantity
-        string type
-    }
-    ComponentType {
+    Playlist {
         string id PK
         string name
         string description
+        datetime created_at
+        datetime updated_at
     }
-    Label {
+    PlaylistVideo {
         string id PK
-        string name
-        string color
+        string playlist_id FK
+        string video_id FK
+        int position
+        datetime added_at
     }
-    ComponentLabel {
-        string component_id PK,FK
-        string label_id PK,FK
-        datetime assigned_at
-    }
-    
-    %% All 7 Mermaid ER Relationship Types:
-    Entity ||--|| EntityProfile : "one-to-one"
-    Entity ||--o{ Request : "one-to-zero-or-many"
-    Request ||--|{ RequestItem : "one-to-one-or-many"
-    RequestItem }|--|| Component : "many-to-one"
-    Component }o--|| ComponentType : "zero-or-many-to-one"
-    Component }|--|{ Label : "many-to-many (via junction)"
-    Entity }o--o{ Component : "zero-or-many-to-zero-or-many"
+
+    Video ||--o{ PlaylistVideo : "included in"
+    Playlist ||--|{ PlaylistVideo : "contains"
 ```
 
 ### Class Diagrams
 ```mermaid
 classDiagram
-    %% Abstract Base Class
-    class BaseEntity {
-        <<abstract>>
+    class YouTubeAPIClient {
+        -String apiKey
+        -String baseUrl
+        +searchVideos(query, options) Promise~VideoResult[]~
+        +getVideoDetails(videoIds) Promise~VideoDetails[]~
+        +getTrendingVideos(region) Promise~VideoResult[]~
+        -handleRateLimit() void
+        -validateResponse(response) boolean
+    }
+
+    class VideoProcessor {
+        -YouTubeAPIClient apiClient
+        -VideoFilter filter
+        +fetchPopularVideos() Promise~Video[]~
+        +refreshPlaylist() Promise~boolean~
+        +validateVideoQuality(video) boolean
+        +extractMetadata(videoData) VideoMetadata
+    }
+
+    class VideoFilter {
+        +filterMusicVideos(videos) Video[]
+        +filterByLanguage(videos, language) Video[]
+        +filterByQuality(videos, minQuality) Video[]
+        +sortByPopularity(videos) Video[]
+    }
+
+    class Video {
         +String id
-        +DateTime createdAt
-        +DateTime updatedAt
-        +validate()* bool
-        +save() bool
-        +delete() bool
+        +String youtubeId
+        +String title
+        +String artist
+        +String thumbnailUrl
+        +Integer durationSeconds
+        +Integer viewCount
+        +DateTime publishedAt
     }
-    
-    %% Interface
-    class IProcessor {
-        <<interface>>
-        +processRequest(data, options)* Result
-        +validateRequest(requestId)* ValidationResult
-        +getStatus(requestId)* Status
-    }
-    
-    %% Concrete Classes
-    class Entity {
-        -String identifier
-        -String name
-        #String type
-        +authenticate(credentials) bool
-        +updateData(data) bool
-        +getRelatedItems() List~Item~
-    }
-    
-    class Item {
-        -String entityId
-        -Decimal value
-        -ItemStatus status
-        -List~Component~ components
-        +addComponent(component, quantity) void
-        +removeComponent(componentId) void
-        +calculateTotal() Decimal
-        +processItem() bool
-    }
-    
-    class Component {
-        +String name
-        +Decimal cost
-        +Integer quantity
-        +String category
-        +updateQuantity(amount) bool
-        +isAvailable() bool
-    }
-    
-    class Service {
-        -String configKey
-        -String environment
-        +processItem(item) Result
-        +handleCallback(data) void
-    }
-    
-    %% Enumeration
-    class ItemStatus {
-        <<enumeration>>
-        PENDING
-        ACTIVE
-        PROCESSING
-        COMPLETED
-        CANCELLED
-    }
-    
-    %% Relationships with multiplicities and labels
-    BaseEntity <|-- Entity : inherits
-    BaseEntity <|-- Item : inherits  
-    BaseEntity <|-- Component : inherits
-    IProcessor <|.. Service : implements
-    Entity "1" --> "0..*" Item : manages
-    Item "1" --> "1..*" Component : contains
-    Item *-- ItemStatus : "has status"
-    Service ..> Item : processes
-    Entity --> Component : accesses
-    
-    %% Notes
-    note for Entity "Entities must be validated\nbefore processing items"
-    note for Service "Configurable service\nfor item processing"
+
+    YouTubeAPIClient --> VideoProcessor : used by
+    VideoFilter --> VideoProcessor : used by
+    VideoProcessor --> Video : creates
 ```
+
 ### Sequence Diagrams
 ```mermaid
 sequenceDiagram
-    participant User
-    participant API
-    participant Service
-    participant Database
-    
-    User->>API: Request
-    API->>Service: Process Request
-    Service->>Database: Query/Update
-    Database-->>Service: Result
-    Service-->>API: Response
-    API-->>User: Final Response
+    participant App as MTV App
+    participant VP as VideoProcessor
+    participant API as YouTubeAPIClient
+    participant YT as YouTube API
+
+    App->>VP: fetchPopularVideos()
+    VP->>API: searchVideos("music", {type: "video"})
+    API->>YT: GET /search?q=music&type=video
+    YT-->>API: Search Results
+    API-->>VP: VideoResult[]
+
+    VP->>VP: filterMusicVideos(results)
+    VP->>API: getVideoDetails(videoIds)
+    API->>YT: GET /videos?id=video1,video2
+    YT-->>API: Video Details
+    API-->>VP: VideoDetails[]
+
+    VP->>VP: extractMetadata(details)
+    VP-->>App: Video[]
 ```
 
 ### Dataflow Diagrams
 ```mermaid
 flowchart TD
     %% External Entities
-    ExternalActor([External Actor])
-    ExternalService([External Service])
-    NotificationSystem([Notification System])
-    
+    YouTubeAPI([YouTube Data API])
+    App([MTV Application])
+
     %% Processes
-    ProcessRequest{Process Request}
-    ValidateData{Validate Data}
-    UpdateStorage{Update Storage}
-    SendResponse{Send Response}
-    
+    SearchVideos{Search Music Videos}
+    FilterContent{Filter & Validate Content}
+    CacheResults{Cache Video Metadata}
+    UpdatePlaylist{Update Playlist}
+
     %% Data Stores
-    PrimaryDB[(Primary Database)]
-    SecondaryDB[(Secondary Database)]  
-    ConfigDB[(Configuration Store)]
-    AuditDB[(Audit Logs)]
-    
-    %% Data Flows with Labels
-    ExternalActor -->|Initial Request| ProcessRequest
-    ProcessRequest -->|Data Query| PrimaryDB
-    PrimaryDB -->|Retrieved Data| ProcessRequest
-    
-    ProcessRequest -->|Validation Request| ValidateData
-    ValidateData -->|External Validation| ExternalService
-    ExternalService -->|Validation Result| ValidateData
-    
-    ValidateData -->|Processed Data| UpdateStorage
-    UpdateStorage -->|Storage Query| SecondaryDB
-    SecondaryDB -->|Current State| UpdateStorage
-    UpdateStorage -->|Updated State| SecondaryDB
-    
-    ValidateData -->|Confirmed Data| ConfigDB
-    ProcessRequest -->|Status Update| SendResponse
-    SendResponse -->|Notification Request| NotificationSystem
-    
-    %% Audit Trail
-    ProcessRequest -->|Activity Log| AuditDB
-    ValidateData -->|Validation Log| AuditDB
-    UpdateStorage -->|Change Log| AuditDB
-    
-    %% Return Flows
-    SendResponse -->|Response| ExternalActor
-    
+    VideoCache[(Video Cache)]
+    PlaylistDB[(Playlist Database)]
+
+    %% Data Flows
+    App -->|Search Request| SearchVideos
+    SearchVideos -->|API Query| YouTubeAPI
+    YouTubeAPI -->|Raw Results| SearchVideos
+
+    SearchVideos -->|Video Data| FilterContent
+    FilterContent -->|Filtered Videos| CacheResults
+    CacheResults -->|Metadata| VideoCache
+
+    FilterContent -->|Validated Content| UpdatePlaylist
+    UpdatePlaylist -->|Playlist Data| PlaylistDB
+    PlaylistDB -->|Current Playlist| UpdatePlaylist
+
+    UpdatePlaylist -->|Video List| App
+    VideoCache -->|Cached Data| FilterContent
+
     %% Styling
     classDef external fill:#e1f5fe
     classDef process fill:#f3e5f5
     classDef datastore fill:#e8f5e8
-    
-    class ExternalActor,ExternalService,NotificationSystem external
-    class ProcessRequest,ValidateData,UpdateStorage,SendResponse process
-    class PrimaryDB,SecondaryDB,ConfigDB,AuditDB datastore
-```
 
-### State Diagrams
-```mermaid
-stateDiagram-v2
-    %% Enabler Lifecycle State Machine
-    [*] --> ReadyforAnalysis : Initialize Enabler
-    
-    ReadyforAnalysis --> InAnalysis : Begin Analysis
-    ReadyforAnalysis --> Retired : Cancel Early
-    
-    InAnalysis --> ReadyforAnalysisReview : Analysis Complete
-    InAnalysis --> ReadyforAnalysis : Return to Analysis
-    
-    ReadyforAnalysisReview --> InAnalysisReview : Begin Review
-    ReadyforAnalysisReview --> InAnalysis : Return to Analysis
-    
-    InAnalysisReview --> ReadyforDesign : Analysis Approved
-    InAnalysisReview --> InAnalysis : Analysis Rejected
-    
-    ReadyforDesign --> InDesign : Begin Design
-    ReadyforDesign --> ReadyforAnalysis : Return to Analysis
-    
-    InDesign --> ReadyforDesignReview : Design Complete
-    InDesign --> ReadyforDesign : Return to Design
-    
-    ReadyforDesignReview --> InDesignReview : Begin Review
-    ReadyforDesignReview --> InDesign : Return to Design
-    
-    InDesignReview --> ReadyforImplementation : Design Approved
-    InDesignReview --> InDesign : Design Rejected
-    
-    ReadyforImplementation --> InImplementation : Begin Implementation
-    ReadyforImplementation --> ReadyforDesign : Return to Design
-    
-    InImplementation --> Implemented : Implementation Complete
-    InImplementation --> ReadyforImplementation : Implementation Issues
-    
-    Implemented --> ReadyforRefactor : Refactoring Needed
-    Implemented --> ReadyforRetirement : End of Life
-    
-    ReadyforRefactor --> InRefactor : Begin Refactor
-    ReadyforRefactor --> Implemented : No Refactor Needed
-    
-    InRefactor --> Implemented : Refactor Complete
-    InRefactor --> ReadyforRefactor : Refactor Issues
-    
-    ReadyforRetirement --> InRetirement : Begin Retirement Process
-    ReadyforRetirement --> Implemented : Continue Usage
-    
-    InRetirement --> Retired : Retirement Complete
-    InRetirement --> ReadyforRetirement : Retirement Issues
-    
-    Retired --> [*]
-    
-    %% Notes
-    note right of InAnalysisReview : Review requirements\nand feasibility
-    note right of InDesignReview : Review technical\ndesign and architecture
-    note right of InImplementation : Active development\nand testing
+    class YouTubeAPI,App external
+    class SearchVideos,FilterContent,CacheResults,UpdatePlaylist process
+    class VideoCache,PlaylistDB datastore
 ```
-
 
 ## Dependencies
 ### Internal Dependencies
-- [Service/Component 1]: [Why needed]
-- [Service/Component 2]: [Why needed]
+- ENB-567003 (Popular Music Curation): Provides curation algorithms
+- Database service: For storing video metadata and playlists
 
 ### External Dependencies
-- [Third-party service 1]: [Integration details]
-- [Third-party service 2]: [Integration details]
+- YouTube Data API v3: Primary video content source
+- API key management service: For secure API authentication
 
 ---
 
@@ -433,7 +306,7 @@ stateDiagram-v2
 - **WORKFLOW HALT**: Do not proceed past failed pre-condition verification
 - **RESPONSE REQUIREMENT**: Must explicitly state "STOPPING due to failed pre-conditions" and explain which conditions failed
 
-### Perform Analysis 
+### Perform Analysis
 | Step | Action | Result |
 |------|--------|--------|
 | 1 | Verify pre-conditions | ALL must be met |
@@ -555,7 +428,7 @@ stateDiagram-v2
 | 2 | Update ALL Functional Requirements Status to "Implemented" |
 | 3 | Update ALL Non-Functional Requirements Status to "Implemented" |
 | 4 | Verify all requirements are marked "Implemented" |
-  
+
 ### Exit Criteria Checklist
 - [ ] Implementation completed for all approved requirements
   - [ ] ALL Functional Requirements Status = "Implemented"
@@ -662,5 +535,4 @@ stateDiagram-v2
 | Implementation | List of implemented requirements |
 
 ## Notes
-[Any additional context, assumptions, or open questions]
-
+This enabler focuses on establishing a robust content pipeline using YouTube's API. The implementation will need proper error handling, rate limiting, and caching to ensure reliable video streaming.

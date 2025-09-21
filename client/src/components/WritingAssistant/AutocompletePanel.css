@@ -1,0 +1,408 @@
+/* Autocomplete Panel Styles */
+
+.autocomplete-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  padding: 12px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-header h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  flex: 1;
+}
+
+.suggestion-count {
+  background: #6366f1;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.empty-icon {
+  margin-bottom: 8px;
+  color: #d1d5db;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 12px;
+}
+
+/* Suggestions List */
+.suggestions-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background: #f9fafb;
+}
+
+.suggestion-item.expanded {
+  background: #f3f4f6;
+}
+
+/* Suggestion Main */
+.suggestion-main {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.suggestion-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.suggestion-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.suggestion-text .text {
+  font-size: 12px;
+  color: #374151;
+  font-family: 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  truncate;
+  flex: 1;
+}
+
+/* Icons */
+.icon-pattern {
+  color: #f59e0b;
+}
+
+.icon-prediction {
+  color: #10b981;
+}
+
+.icon-learned {
+  color: #8b5cf6;
+}
+
+.icon-completion {
+  color: #6b7280;
+}
+
+.icon-default {
+  color: #9ca3af;
+}
+
+/* Suggestion Meta */
+.suggestion-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.confidence {
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.confidence.high {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.confidence.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.confidence.low {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.type {
+  font-size: 10px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* Suggestion Details */
+.suggestion-details {
+  padding: 12px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  animation: expandDetail 0.2s ease-out;
+}
+
+@keyframes expandDetail {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.description {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.metadata {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.source,
+.category {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+.usage-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.rating {
+  color: #f59e0b;
+}
+
+/* Suggestion Actions */
+.suggestion-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.action-btn.accept {
+  background: #f0f9ff;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
+}
+
+.action-btn.accept:hover {
+  background: #0ea5e9;
+  color: white;
+}
+
+.action-btn.reject {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.action-btn.reject:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Suggestions Footer */
+.suggestions-footer {
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.suggestions-footer small {
+  color: #6b7280;
+  font-size: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .suggestion-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .suggestion-meta {
+    align-self: flex-end;
+  }
+
+  .suggestion-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    justify-content: center;
+  }
+}
+
+/* Accessibility */
+.suggestion-main:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: -2px;
+}
+
+.action-btn:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+
+/* Animation for suggestion appearance */
+.suggestion-item {
+  animation: fadeInSuggestion 0.3s ease-out;
+}
+
+@keyframes fadeInSuggestion {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .autocomplete-panel {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .panel-header {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+
+  .panel-header h4 {
+    color: #f9fafb;
+  }
+
+  .suggestion-item:hover {
+    background: #374151;
+  }
+
+  .suggestion-item.expanded {
+    background: #374151;
+  }
+
+  .suggestion-text .text {
+    color: #d1d5db;
+  }
+
+  .suggestion-details {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+
+  .description {
+    color: #9ca3af;
+  }
+
+  .source,
+  .category,
+  .usage-info {
+    color: #9ca3af;
+  }
+
+  .type {
+    background: #374151;
+    color: #9ca3af;
+  }
+
+  .suggestions-footer {
+    background: #111827;
+    border-top-color: #374151;
+  }
+
+  .suggestions-footer small {
+    color: #9ca3af;
+  }
+
+  .empty-state {
+    color: #9ca3af;
+  }
+
+  .empty-icon {
+    color: #6b7280;
+  }
+
+  .loading-state {
+    color: #9ca3af;
+  }
+}

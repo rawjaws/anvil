@@ -88,6 +88,14 @@ class NLPProcessor {
         const startTime = Date.now();
 
         try {
+            // Validate input
+            if (!text || typeof text !== 'string') {
+                return {
+                    success: false,
+                    error: 'Invalid input: text must be a non-empty string'
+                };
+            }
+
             const analysis = {
                 text,
                 timestamp: new Date().toISOString(),
@@ -99,7 +107,7 @@ class NLPProcessor {
                 quality: {}
             };
 
-            // Perform parallel analysis
+            // Perform parallel analysis with error handling
             const [
                 clarityResults,
                 specificityResults,
@@ -107,11 +115,15 @@ class NLPProcessor {
                 terminologyResults,
                 semanticResults
             ] = await Promise.all([
-                this.analyzeClarityAsync(text),
-                this.analyzeSpecificityAsync(text),
-                this.analyzeCompletenessAsync(text),
-                this.analyzeTerminologyAsync(text),
-                this.analyzeSemanticStructureAsync(text)
+                this.analyzeClarityAsync(text).catch(err => ({ score: 50, issues: [], metrics: {}, error: err.message })),
+                this.analyzeSpecificityAsync(text).catch(err => ({ score: 50, issues: [], metrics: {}, error: err.message })),
+                this.analyzeCompletenessAsync(text).catch(err => ({ score: 50, issues: [], metrics: {}, error: err.message })),
+                this.analyzeTerminologyAsync(text).catch(err => ({ terms: [], confidence: 0.5, error: err.message })),
+                this.analyzeSemanticStructureAsync(text).catch(err => ({
+                    stakeholders: [], actions: [], objects: [], conditions: [],
+                    structure: { functional: [], nonfunctional: [], constraints: [] },
+                    error: err.message
+                }))
             ]);
 
             // Consolidate results
@@ -131,7 +143,25 @@ class NLPProcessor {
             return analysis;
 
         } catch (error) {
-            throw new Error(`NLP Analysis failed: ${error.message}`);
+            // Return a valid analysis object even on error to maintain API compatibility
+            return {
+                text: text || '',
+                timestamp: new Date().toISOString(),
+                metrics: { qualityScore: 0, processingTime: Date.now() - startTime },
+                issues: [{ type: 'analysis_error', severity: 'high', message: error.message }],
+                suggestions: [],
+                terminology: { terms: [], confidence: 0 },
+                semantic: {
+                    stakeholders: [], actions: [], objects: [], conditions: [],
+                    structure: { functional: [], nonfunctional: [], constraints: [] }
+                },
+                quality: {
+                    clarity: { score: 0, issues: [] },
+                    specificity: { score: 0, issues: [] },
+                    completeness: { score: 0, issues: [] }
+                },
+                error: error.message
+            };
         }
     }
 

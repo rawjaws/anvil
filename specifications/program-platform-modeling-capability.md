@@ -1,115 +1,179 @@
-# Display Hello World
+# Program & Platform Modeling
 
 ## Metadata
-
-- **Name**: Display Hello World
+- **Name**: Program & Platform Modeling
 - **Type**: Capability
-- **System**: example
-- **Component**: Hello World Application
-- **ID**: CAP-993034
-- **Owner**: Product Team
-- **Status**: Ready for Design
+- **System**: Automotive Resource Modeling
+- **Component**: Business Logic Engine
+- **ID**: CAP-003
+- **Status**: Ready for Implementation
 - **Approval**: Approved
-- **Priority**: Medium
-- **Analysis Review**: Not Required
+- **Priority**: Critical
+- **Analysis Review**: Required
+- **Owner**: Engineering Team
+- **Created Date**: 2025-09-19
+- **Last Updated**: 2025-09-19
+- **Version**: 1.0
 
 ## Technical Overview
 ### Purpose
-Display Hello World in a Web application
+Provides the core business logic for modeling automotive platform development and vehicle application programs. This capability handles Job 1 date processing, platform-specific multipliers, shared platform work distribution, application sequence tracking, and efficiency curve application for accurate resource modeling.
 
 ## Enablers
+List of enablers that implement this capability:
 
 | Enabler ID | Name | Description | Status | Approval | Priority |
 |------------|------|-------------|--------|----------|----------|
-| ENB-424964 | Display Hello World |  | Ready for Design | Approved | High |
-| ENB-128923 | Node Javascript Application |  | Ready for Design | Approved | High |
+| ENB-007 | Job 1 Timeline Calculation | Calculate development timeline from Job 1 date and program duration | Ready for Implementation | Approved | Critical |
+| ENB-008 | Platform Application Multipliers | Platform-specific multipliers for application work calculation | Ready for Implementation | Approved | High |
+| ENB-009 | Shared Platform Work Distribution | Logic for distributing shared platform work across applications | Ready for Implementation | Approved | High |
+| ENB-019 | Application Sequence Tracking | Track 1st, 2nd, 3rd... application per platform for efficiency curves | Ready for Implementation | Approved | High |
+| ENB-020 | Efficiency Curve Application | Apply efficiency multipliers to resource calculations based on sequence | Ready for Implementation | Approved | High |
 
 ## Dependencies
-
 ### Internal Upstream Dependency
-
-| Capability ID | Description |
-|---------------|-------------|
-| | |
+| Capability ID | Name | Description |
+|---------------|------|-------------|
+| CAP-001 | Excel VBA Framework | Provides VBA infrastructure and error handling |
+| CAP-002 | Resource Curve Engine | Provides stretched resource curves for calculations |
+| CAP-007 | Application Efficiency Curves | Provides efficiency multipliers for applications |
 
 ### Internal Downstream Impact
+| Capability ID | Name | Description |
+|---------------|------|-------------|
+| CAP-004 | Calendarization & Resource Allocation | Uses program models for timeline generation |
+| CAP-005 | User Interface & Configuration | Displays program and platform information |
+| CAP-006 | Data Management | Stores program and platform model data |
 
-| Capability ID | Description |
-|---------------|-------------|
-| | |
+### External Upstream Dependencies
+- Vehicle program Job 1 dates from OEM planning teams
+- Platform definitions and characteristics
+- Historical application work multipliers
 
-### External Dependencies
-
-**External Upstream Dependencies**: None identified.
-
-**External Downstream Impact**: None identified.
+### External Downstream Impact
+- Vehicle program resource planning accuracy
+- Platform development investment decisions
+- Cross-program resource optimization
 
 ## Technical Specifications
 
-### System Architecture
-The Hello World capability is implemented as a standalone web application with the following architecture:
-
-- **Frontend**: React-based web interface for displaying Hello World message
-- **Backend**: Node.js Express server hosting the application on port 4443
-- **Deployment**: Cross-platform support for Windows, Mac, and Linux
-- **Launch**: Convenient launch scripts for easy startup
-
 ### Capability Dependency Flow Diagram
-> **Note**: This Hello World application is a standalone capability with no external dependencies.
-
 ```mermaid
 flowchart TD
+    %% External Inputs
+    JOB1["Vehicle Program<br/>Job 1 Dates<br/>📅"]
+    PLATFORM["Platform Definitions<br/>& Characteristics<br/>🏗️"]
+    HISTORICAL["Historical Application<br/>Work Multipliers<br/>📊"]
+
+    %% Upstream Dependencies
+    CAP001["CAP-001<br/>Excel VBA Framework<br/>🔧"]
+    CAP002["CAP-002<br/>Resource Curve Engine<br/>📈"]
+    CAP007["CAP-007<br/>Application Efficiency Curves<br/>⚡"]
+
     %% Current Capability
-    CAP993034["CAP-993034<br/>Display Hello World<br/>🌐"]
+    CAP003["CAP-003<br/>Program & Platform Modeling<br/>🚗"]
 
-    %% Browser Access
-    USER([User Browser])
+    %% Downstream Dependencies
+    CAP004["CAP-004<br/>Calendarization & Resource Allocation<br/>📅"]
+    CAP005["CAP-005<br/>User Interface & Configuration<br/>🖥️"]
+    CAP006["CAP-006<br/>Data Management<br/>💾"]
 
-    %% Simple flow
-    USER -->|Access Application| CAP993034
-    CAP993034 -->|Display Message| USER
+    %% External Outputs
+    OUTPUT1["Vehicle Program<br/>Resource Planning<br/>🎯"]
+    OUTPUT2["Platform Development<br/>Investment Decisions<br/>💰"]
+    OUTPUT3["Cross-Program<br/>Resource Optimization<br/>🔄"]
+
+    %% Dependencies Flow
+    JOB1 --> CAP003
+    PLATFORM --> CAP003
+    HISTORICAL --> CAP003
+    
+    CAP001 --> CAP003
+    CAP002 --> CAP003
+    CAP007 --> CAP003
+
+    CAP003 --> CAP004
+    CAP003 --> CAP005
+    CAP003 --> CAP006
+
+    CAP004 --> OUTPUT1
+    CAP005 --> OUTPUT2
+    CAP006 --> OUTPUT3
 
     %% Styling
     classDef current fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
-    classDef user fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef internal fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef input fill:#fff8e1,stroke:#ff8f00,stroke-width:2px
+    classDef output fill:#f1f8e9,stroke:#689f38,stroke-width:2px
 
-    class CAP993034 current
-    class USER user
+    class CAP003 current
+    class CAP001,CAP002,CAP007,CAP004,CAP005,CAP006 internal
+    class JOB1,PLATFORM,HISTORICAL input
+    class OUTPUT1,OUTPUT2,OUTPUT3 output
 
-    %% Note about standalone nature
-    subgraph STANDALONE ["Standalone Application"]
-        CAP993034
+    %% Capability Grouping
+    subgraph SYSTEM ["Automotive Resource Modeling System"]
+        subgraph CORE ["Core Framework"]
+            CAP001
+            CAP002
+        end
+        subgraph BUSINESS ["Business Logic"]
+            CAP003
+            CAP007
+        end
+        subgraph FEATURES ["Feature Capabilities"]
+            CAP004
+            CAP005
+            CAP006
+        end
+    end
+
+    subgraph INPUTS ["External Inputs"]
+        JOB1
+        PLATFORM
+        HISTORICAL
+    end
+
+    subgraph OUTPUTS ["External Outputs"]
+        OUTPUT1
+        OUTPUT2
+        OUTPUT3
     end
 ```
-# Development Plan
 
-# Development Plan
+### Program & Platform Architecture
+The Program & Platform Modeling capability provides:
 
-# Development Plan
+1. **Job 1 Timeline Calculation**: Convert Job 1 production dates and program durations into development start dates and milestones
+2. **Platform Application Logic**: Calculate application-specific work based on platform characteristics and multipliers
+3. **Shared Work Distribution**: Allocate shared platform development work across multiple vehicle applications
+4. **Application Sequencing**: Track which application is 1st, 2nd, 3rd, etc. for each platform to enable efficiency curves
+5. **Resource Calculation**: Combine base resources × platform multipliers × efficiency multipliers
 
-# Development Plan
+### Platform-Application Relationship
+- **Platform Work**: Shared development work that benefits all applications of a platform
+- **Application Work**: Vehicle-specific customization (calibrations, branding, testing)
+- **Efficiency Curves**: Learning curve effects where subsequent applications require fewer resources
+- **Platform Multipliers**: Platform-specific factors that influence application work complexity
 
-# Development Plan
+### Calculation Logic
+```
+Total Resource = (Platform Work / Number of Applications) + 
+                (Application Work × Platform Multiplier × Efficiency Multiplier)
 
-# Development Plan
+Where:
+- Platform Work: Shared development allocated across all applications
+- Application Work: Base application work from resource curves
+- Platform Multiplier: Platform-specific complexity factor
+- Efficiency Multiplier: Learning curve factor (100%, 80%, 65%...)
+```
 
-# Development Plan
-
-# Development Plan
-
-# Development Plan
-
-# Development Plan
-
-# Development Plan
-
-# Development Plan
-
-# Development Plan
-
-# Development Plan
-
-# Development Plan
+### Technical Requirements
+- **Timeline Accuracy**: Calculate development timelines within ±1 week accuracy
+- **Platform Support**: Handle up to 10 different platforms simultaneously
+- **Application Tracking**: Support up to 30 vehicle programs per platform
+- **Performance**: Complete calculations for all programs in under 3 seconds
+- **Validation**: Detect and flag invalid platform/application configurations
 
 # Development Plan
 
@@ -160,7 +224,7 @@ flowchart TD
 
 ### Pre-Conditions Verification
 | Condition | Required Value | Action if True | Action if False |
-|-----------|----------------|----------------|-----------------|
+|-----------|----------------|----------------|------------------|
 | Task 1 Completion | Must be "Passed" | Continue to next condition check | STOP - explain why you are stopping |
 | Capability Status | "Ready for Analysis" | Continue to Analysis Process Section | SKIP to Task 3: Design |
 
@@ -171,15 +235,13 @@ flowchart TD
 - **WORKFLOW HALT**: Do not proceed past failed pre-condition verification
 - **RESPONSE REQUIREMENT**: Must explicitly state "STOPPING due to failed pre-conditions" and explain which conditions failed
 
-### Perform Analysis 
+### Perform Analysis
 | Step | Action | Result |
 |------|--------|--------|
 | 1 | Verify pre-conditions | ALL must be met |
 | 2 | Set Capability Status | "In Analysis" |
 | 3 | Generate new Enablers, add Enablers to Capability List and Create the actual Enabler files, ensure you include the Technical Specifications section from the Enabler Template| Analyze the Capability and create new Enablers |
 | 4 | Configure Enablers | Apply Enabler Configuration Rules below |
-
-
 
 ### Enabler Configuration Rules
 | Enabler Analysis Review Setting | Enabler Approval | Enabler Status | Enabler Priority |
@@ -243,13 +305,6 @@ flowchart TD
 | Technical Specifications | Main design | Required |
 | Document any Dependency Flow Diagrams in the Capability Dependency Flow Diagrams Section | Flow diagrams | Mark "Not Applicable" if not applicable |
 
-**CRITICAL**: When creating dependency diagrams, follow these rules for non-existent capabilities:
-    - **Grey Theme Rule**: Any capability that does not actually exist in the specifications directory must be styled with grey theme
-    - **Placeholder Naming**: Use generic placeholder names like "CAP-XXX01", "CAP-XXX02" for non-existent capabilities
-    - **Grey Styling**: Apply grey fill and stroke colors (e.g., `fill:#f5f5f5,stroke:#999999`) to non-existent capabilities
-    - **Clear Labeling**: Add "(Placeholder)" suffix to non-existent capability names
-    - **Documentation Note**: Include a note in the diagram explaining that grey capabilities are placeholders for future implementation
-
 ### Post-Condition Transition
 | Step | Action |
 |------|--------|
@@ -259,23 +314,6 @@ flowchart TD
 - 🚫 Never bypass for any reason whatsoever
 - 🚫 Never write implementation code during this task
 - 🚫 Never used unapproved or not ready to implement requirements in design
-
-**Example Grey Styling for Non-Existent Capabilities**:
-```mermaid
-flowchart TD
-    CAP567693["CAP-567693<br/>Web Application<br/>🌐"]
-    CAPXXX01["CAP-XXX01<br/>Auth Service (Placeholder)<br/>🔐"]
-    CAPXXX02["CAP-XXX02<br/>Content Manager (Placeholder)<br/>📝"]
-
-    classDef current fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
-    classDef placeholder fill:#f5f5f5,stroke:#999999,stroke-width:2px,stroke-dasharray: 5 5
-
-    class CAP567693 current
-    class CAPXXX01,CAPXXX02 placeholder
-```
-
-**Key Rule**: Only use actual capability IDs that exist in your specifications directory. All others must be clearly
-marked as placeholders with grey styling.
 
 ---
 
@@ -310,4 +348,3 @@ marked as placeholders with grey styling.
 - [ ] Requirement Status updated appropriately
 - [ ] Unapproved requirements skipped
 - [ ] Enabler State set to "Implemented"
-

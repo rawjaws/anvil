@@ -13,7 +13,8 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../dist',
+    outDir: 'dist',
+    emptyOutDir: true,
     // Enable code splitting and bundle optimization
     rollupOptions: {
       output: {

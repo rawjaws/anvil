@@ -1,6 +1,6 @@
 /**
- * Template Browser Component
- * Advanced search and filtering interface for marketplace templates
+ * Camelot's Library Browse Component
+ * Advanced search and filtering interface for ancient scrolls and manuscripts
  */
 
 import React, { useState, useEffect, useCallback } from 'react';

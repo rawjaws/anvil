@@ -20,10 +20,74 @@ import App from './App.jsx'
 import './index.css'
 import { Toaster } from 'react-hot-toast'
 
+// THE HAMMER'S FINAL OPTIMIZATION: Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('[ServiceWorker] Registration successful:', registration.scope);
+
+        // Listen for service worker updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Show update available notification
+              if (window.toast) {
+                window.toast.success('App update available! Refresh to update.', {
+                  duration: 10000,
+                  id: 'sw-update'
+                });
+              }
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.log('[ServiceWorker] Registration failed:', error);
+      });
+
+    // Listen for service worker messages
+    navigator.serviceWorker.addEventListener('message', event => {
+      const { type, isOnline, action } = event.data;
+
+      if (type === 'CONNECTION_STATUS') {
+        // Update global connection status
+        window.isOnline = isOnline;
+
+        // Dispatch custom event for components to listen to
+        window.dispatchEvent(new CustomEvent('connectionchange', {
+          detail: { isOnline }
+        }));
+
+        if (window.toast) {
+          if (isOnline) {
+            window.toast.success('Connection restored!', { id: 'connection' });
+          } else {
+            window.toast.error('You are offline. Some features may be limited.', {
+              id: 'connection',
+              duration: 10000
+            });
+          }
+        }
+      }
+
+      if (type === 'BACKGROUND_SYNC' && action === 'sync_pending_data') {
+        // Trigger data sync in the application
+        window.dispatchEvent(new CustomEvent('backgroundsync'));
+      }
+    });
+  });
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
-    <Toaster 
+    <Toaster
+      ref={(toaster) => {
+        window.toast = toaster;
+      }}
       position="top-right"
       toastOptions={{
         duration: 4000,

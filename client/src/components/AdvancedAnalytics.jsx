@@ -1,8 +1,92 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useApp } from '../contexts/AppContext'
 import { useAdvancedAnalytics } from '../contexts/FeatureContext'
-import { BarChart3, TrendingUp, Users, FileText, Clock, Target } from 'lucide-react'
+import { BarChart3, TrendingUp, Users, FileText, Clock, Target, Brain, Activity, AlertTriangle, Zap } from 'lucide-react'
 import './AdvancedAnalytics.css'
+
+// PreCog Integration Hook
+function usePreCogAnalytics() {
+  const [precogData, setPrecogData] = useState(null)
+  const [marketIntelligence, setMarketIntelligence] = useState(null)
+  const [predictions, setPredictions] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchPreCogData = async () => {
+      setLoading(true)
+      try {
+        // Simulate PreCog API calls
+        const [market, intelligence, predict] = await Promise.all([
+          simulateMarketPrecognition(),
+          simulateIntelligenceGathering(),
+          simulatePredictiveModeling()
+        ])
+        setPrecogData(market)
+        setMarketIntelligence(intelligence)
+        setPredictions(predict)
+      } catch (error) {
+        console.error('PreCog Analytics Error:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPreCogData()
+    const interval = setInterval(fetchPreCogData, 30000) // Update every 30 seconds
+    return () => clearInterval(interval)
+  }, [])
+
+  return { precogData, marketIntelligence, predictions, loading }
+}
+
+// Simulate PreCog API calls
+async function simulateMarketPrecognition() {
+  await new Promise(resolve => setTimeout(resolve, 800))
+  return {
+    marketTrend: 'growth',
+    confidence: 0.87,
+    riskLevel: 'medium',
+    successProbability: 0.82,
+    timeframe: '6 months',
+    keyInsights: [
+      'Market adoption accelerating by 25%',
+      'Competitive landscape shifting',
+      'Technology convergence creating opportunities'
+    ]
+  }
+}
+
+async function simulateIntelligenceGathering() {
+  await new Promise(resolve => setTimeout(resolve, 600))
+  return {
+    competitiveThreats: 2,
+    marketOpportunities: 4,
+    industryGrowth: '+18%',
+    marketPosition: 'Strong',
+    strategicRecommendations: [
+      'Accelerate product development',
+      'Expand market presence',
+      'Strengthen partnerships'
+    ]
+  }
+}
+
+async function simulatePredictiveModeling() {
+  await new Promise(resolve => setTimeout(resolve, 700))
+  return {
+    qualityScore: 0.91,
+    deliveryProbability: 0.85,
+    riskFactors: [
+      { factor: 'Technical complexity', impact: 'medium', probability: 0.3 },
+      { factor: 'Resource availability', impact: 'low', probability: 0.2 }
+    ],
+    recommendations: [
+      'Increase test coverage to 95%',
+      'Implement continuous monitoring',
+      'Enhance team training programs'
+    ]
+  }
+}
 
 // Analytics Data Processing
 function useAnalyticsData() {
@@ -235,11 +319,148 @@ function TimelineChart({ data }) {
   )
 }
 
-// Main Advanced Analytics Component
+// PreCog Market Intelligence Component
+function PreCogIntelligence({ data, loading }) {
+  if (loading) {
+    return (
+      <div className="precog-loading">
+        <Brain className="precog-brain spinning" />
+        <span>Analyzing market intelligence...</span>
+      </div>
+    )
+  }
+
+  if (!data) return null
+
+  return (
+    <div className="precog-intelligence">
+      <h3><Brain size={20} /> Market Precognition</h3>
+      <div className="intelligence-grid">
+        <div className="intelligence-metric">
+          <span className="metric-label">Market Trend</span>
+          <span className={`metric-value trend-${data.marketTrend}`}>
+            {data.marketTrend.toUpperCase()}
+          </span>
+        </div>
+        <div className="intelligence-metric">
+          <span className="metric-label">Confidence</span>
+          <span className="metric-value">{Math.round(data.confidence * 100)}%</span>
+        </div>
+        <div className="intelligence-metric">
+          <span className="metric-label">Success Probability</span>
+          <span className="metric-value">{Math.round(data.successProbability * 100)}%</span>
+        </div>
+        <div className="intelligence-metric">
+          <span className="metric-label">Risk Level</span>
+          <span className={`metric-value risk-${data.riskLevel}`}>
+            {data.riskLevel.toUpperCase()}
+          </span>
+        </div>
+      </div>
+      <div className="key-insights">
+        <h4>Key Insights</h4>
+        <ul>
+          {data.keyInsights.map((insight, index) => (
+            <li key={index}>{insight}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+// Real-Time Intelligence Processor
+function RealTimeIntelligence({ intelligence, predictions }) {
+  if (!intelligence || !predictions) return null
+
+  return (
+    <div className="realtime-intelligence">
+      <h3><Activity size={20} /> Live Intelligence</h3>
+      <div className="intelligence-dashboard">
+        <div className="intel-section">
+          <h4>Market Position</h4>
+          <div className="position-indicator">
+            <span className="position-label">Current Position:</span>
+            <span className={`position-value ${intelligence.marketPosition.toLowerCase()}`}>
+              {intelligence.marketPosition}
+            </span>
+          </div>
+          <div className="growth-metric">
+            <span className="growth-label">Industry Growth:</span>
+            <span className="growth-value positive">{intelligence.industryGrowth}</span>
+          </div>
+        </div>
+
+        <div className="intel-section">
+          <h4>Threat Assessment</h4>
+          <div className="threat-metrics">
+            <div className="threat-item">
+              <AlertTriangle size={16} className="threat-icon" />
+              <span>{intelligence.competitiveThreats} Active Threats</span>
+            </div>
+            <div className="opportunity-item">
+              <Zap size={16} className="opportunity-icon" />
+              <span>{intelligence.marketOpportunities} Opportunities</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="intel-section">
+          <h4>Predictive Scores</h4>
+          <div className="prediction-scores">
+            <div className="score-item">
+              <span className="score-label">Quality Forecast:</span>
+              <span className="score-value high">{Math.round(predictions.qualityScore * 100)}%</span>
+            </div>
+            <div className="score-item">
+              <span className="score-label">Delivery Probability:</span>
+              <span className="score-value high">{Math.round(predictions.deliveryProbability * 100)}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Intelligence Alerts System
+function IntelligenceAlerts({ predictions }) {
+  if (!predictions || !predictions.recommendations) return null
+
+  return (
+    <div className="intelligence-alerts">
+      <h3><AlertTriangle size={20} /> Intelligence Alerts</h3>
+      <div className="alerts-list">
+        {predictions.recommendations.map((rec, index) => (
+          <div key={index} className="alert-item">
+            <div className="alert-priority high"></div>
+            <div className="alert-content">
+              <span className="alert-text">{rec}</span>
+              <span className="alert-timestamp">Just now</span>
+            </div>
+          </div>
+        ))}
+        {predictions.riskFactors.map((risk, index) => (
+          <div key={`risk-${index}`} className="alert-item">
+            <div className={`alert-priority ${risk.impact}`}></div>
+            <div className="alert-content">
+              <span className="alert-text">Risk: {risk.factor}</span>
+              <span className="alert-detail">{Math.round(risk.probability * 100)}% probability</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Main Morgana's Crystal Ball Component
 export default function AdvancedAnalytics() {
   const { enabled, config } = useAdvancedAnalytics()
   const analytics = useAnalyticsData()
+  const { precogData, marketIntelligence, predictions, loading } = usePreCogAnalytics()
   const [refreshTime, setRefreshTime] = useState(new Date())
+  const [activeTab, setActiveTab] = useState('overview')
 
   useEffect(() => {
     if (config.realTimeMetrics) {
@@ -254,7 +475,7 @@ export default function AdvancedAnalytics() {
   if (!enabled) {
     return (
       <div className="analytics-disabled">
-        <h2>Advanced Analytics</h2>
+        <h2>Morgana's Crystal Ball</h2>
         <p>This feature is currently disabled. Enable it in the Feature Management settings to access advanced analytics and insights.</p>
       </div>
     )
@@ -265,7 +486,7 @@ export default function AdvancedAnalytics() {
   return (
     <div className="advanced-analytics">
       <div className="analytics-header">
-        <h1>Advanced Analytics</h1>
+        <h1>Enhanced Analytics</h1>
         <div className="analytics-meta">
           <span className="last-updated">
             <Clock size={16} />
@@ -274,56 +495,126 @@ export default function AdvancedAnalytics() {
           {config.realTimeMetrics && (
             <span className="real-time-indicator">
               <div className="pulse-dot" />
-              Real-time
+              Real-time + PreCog
             </span>
           )}
         </div>
       </div>
 
-      {config.dashboardWidgets && (
-        <div className="metrics-overview">
-          <MetricCard
-            title="Total Capabilities"
-            value={overview.totalCapabilities}
-            icon={Target}
-          />
-          <MetricCard
-            title="Total Enablers"
-            value={overview.totalEnablers}
-            icon={FileText}
-          />
-          <MetricCard
-            title="Completed"
-            value={overview.completedEnablers}
-            subtitle={`${Math.round((overview.completedEnablers / overview.totalEnablers) * 100) || 0}% complete`}
-            icon={BarChart3}
-          />
-          <MetricCard
-            title="In Progress"
-            value={overview.inProgressEnablers}
-            subtitle={`${Math.round((overview.inProgressEnablers / overview.totalEnablers) * 100) || 0}% active`}
-            icon={Users}
-          />
+      <div className="analytics-tabs">
+        <button
+          className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          <BarChart3 size={16} /> Overview
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'precog' ? 'active' : ''}`}
+          onClick={() => setActiveTab('precog')}
+        >
+          <Brain size={16} /> PreCog Intelligence
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'realtime' ? 'active' : ''}`}
+          onClick={() => setActiveTab('realtime')}
+        >
+          <Activity size={16} /> Live Intelligence
+        </button>
+      </div>
+
+      {activeTab === 'overview' && (
+        <>
+          {config.dashboardWidgets && (
+            <div className="metrics-overview">
+              <MetricCard
+                title="Total Capabilities"
+                value={overview.totalCapabilities}
+                icon={Target}
+              />
+              <MetricCard
+                title="Total Enablers"
+                value={overview.totalEnablers}
+                icon={FileText}
+              />
+              <MetricCard
+                title="Completed"
+                value={overview.completedEnablers}
+                subtitle={`${Math.round((overview.completedEnablers / overview.totalEnablers) * 100) || 0}% complete`}
+                icon={BarChart3}
+              />
+              <MetricCard
+                title="In Progress"
+                value={overview.inProgressEnablers}
+                subtitle={`${Math.round((overview.inProgressEnablers / overview.totalEnablers) * 100) || 0}% active`}
+                icon={Users}
+              />
+              {predictions && (
+                <MetricCard
+                  title="Quality Forecast"
+                  value={`${Math.round(predictions.qualityScore * 100)}%`}
+                  subtitle="AI Prediction"
+                  icon={Brain}
+                  trend={5}
+                />
+              )}
+              {precogData && (
+                <MetricCard
+                  title="Success Probability"
+                  value={`${Math.round(precogData.successProbability * 100)}%`}
+                  subtitle="PreCog Analysis"
+                  icon={Zap}
+                  trend={8}
+                />
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {activeTab === 'overview' && (
+        <div className="analytics-grid">
+          <div className="analytics-card">
+            <StatusChart data={statusDistribution} />
+          </div>
+
+          <div className="analytics-card">
+            <CapabilityProgress metrics={capabilityMetrics} />
+          </div>
+
+          <div className="analytics-card">
+            <TimelineChart data={monthlyProgress} />
+          </div>
+
+          <div className="analytics-card">
+            <StatusChart data={priorityDistribution} />
+          </div>
         </div>
       )}
 
-      <div className="analytics-grid">
-        <div className="analytics-card">
-          <StatusChart data={statusDistribution} />
-        </div>
+      {activeTab === 'precog' && (
+        <div className="precog-dashboard">
+          <div className="precog-grid">
+            <div className="analytics-card">
+              <PreCogIntelligence data={precogData} loading={loading} />
+            </div>
 
-        <div className="analytics-card">
-          <CapabilityProgress metrics={capabilityMetrics} />
+            <div className="analytics-card">
+              <IntelligenceAlerts predictions={predictions} />
+            </div>
+          </div>
         </div>
+      )}
 
-        <div className="analytics-card">
-          <TimelineChart data={monthlyProgress} />
+      {activeTab === 'realtime' && (
+        <div className="realtime-dashboard">
+          <div className="analytics-card full-width">
+            <RealTimeIntelligence
+              intelligence={marketIntelligence}
+              predictions={predictions}
+            />
+          </div>
         </div>
-
-        <div className="analytics-card">
-          <StatusChart data={priorityDistribution} />
-        </div>
-      </div>
+      )}
 
       {config.exportCharts && (
         <div className="analytics-actions">

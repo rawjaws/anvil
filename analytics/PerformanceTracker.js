@@ -14,6 +14,8 @@ class PerformanceTracker extends EventEmitter {
     this.projectMetrics = new Map();
     this.realTimeEvents = [];
     this.benchmarks = new Map();
+    this.intervals = []; // Store intervals for cleanup
+    this.initialized = false;
 
     this.initialize();
   }
@@ -26,6 +28,7 @@ class PerformanceTracker extends EventEmitter {
     this.initializeBenchmarks();
     this.startRealTimeTracking();
 
+    this.initialized = true;
     this.emit('initialized');
     console.log('✅ Performance Tracker ready');
   }
@@ -104,20 +107,55 @@ class PerformanceTracker extends EventEmitter {
   }
 
   startRealTimeTracking() {
+    // Add timeout protection to prevent infinite loops
     // Process real-time events every 100ms for high throughput
-    setInterval(() => {
-      this.processRealTimeEvents();
+    const eventInterval = setInterval(() => {
+      try {
+        const startTime = Date.now();
+        this.processRealTimeEvents();
+        const processingTime = Date.now() - startTime;
+
+        // Warn if processing takes too long
+        if (processingTime > 50) {
+          console.warn(`⚠️ Event processing took ${processingTime}ms`);
+        }
+      } catch (error) {
+        console.error('❌ Error in real-time event processing:', error);
+      }
     }, 100);
+    this.intervals.push(eventInterval);
 
-    // Update metrics every 5 seconds
-    setInterval(() => {
-      this.updateMetrics();
+    // Update metrics every 5 seconds with timeout protection
+    const metricsInterval = setInterval(() => {
+      try {
+        const startTime = Date.now();
+        this.updateMetrics();
+        const processingTime = Date.now() - startTime;
+
+        if (processingTime > 200) {
+          console.warn(`⚠️ Metrics update took ${processingTime}ms`);
+        }
+      } catch (error) {
+        console.error('❌ Error in metrics update:', error);
+      }
     }, 5000);
+    this.intervals.push(metricsInterval);
 
-    // Generate insights every minute
-    setInterval(() => {
-      this.generateInsights();
+    // Generate insights every minute with timeout protection
+    const insightsInterval = setInterval(() => {
+      try {
+        const startTime = Date.now();
+        this.generateInsights();
+        const processingTime = Date.now() - startTime;
+
+        if (processingTime > 500) {
+          console.warn(`⚠️ Insights generation took ${processingTime}ms`);
+        }
+      } catch (error) {
+        console.error('❌ Error in insights generation:', error);
+      }
     }, 60000);
+    this.intervals.push(insightsInterval);
   }
 
   /**
@@ -127,10 +165,32 @@ class PerformanceTracker extends EventEmitter {
   async trackTeamVelocity(teamData) {
     const startTime = Date.now();
 
+    // Add input validation with fallback
+    if (!teamData) {
+      throw new Error('Invalid team data: teamData is required');
+    }
+
+    // Provide default teamId if missing
+    if (!teamData.teamId) {
+      teamData.teamId = 'default_team';
+    }
+
     try {
-      const velocity = this.calculateVelocity(teamData);
-      const productivity = this.calculateProductivity(teamData);
-      const collaboration = this.calculateCollaborationMetrics(teamData);
+      // Add timeout protection for calculations
+      const calculationPromise = Promise.all([
+        Promise.resolve(this.calculateVelocity(teamData)),
+        Promise.resolve(this.calculateProductivity(teamData)),
+        Promise.resolve(this.calculateCollaborationMetrics(teamData))
+      ]);
+
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Team velocity calculation timeout')), 1000);
+      });
+
+      const [velocity, productivity, collaboration] = await Promise.race([
+        calculationPromise,
+        timeoutPromise
+      ]);
 
       const metrics = {
         teamId: teamData.teamId,
@@ -742,16 +802,582 @@ class PerformanceTracker extends EventEmitter {
     return totalImpact / opportunities.length;
   }
 
-  // Add event recording method
-  recordEvent(event) {
-    this.realTimeEvents.push({
-      ...event,
-      timestamp: Date.now()
-    });
+  // Enhanced updateTeamMetrics with timeout protection
+  updateTeamMetrics() {
+    try {
+      const startTime = Date.now();
 
-    // Maintain event queue size for performance
-    if (this.realTimeEvents.length > 10000) {
-      this.realTimeEvents = this.realTimeEvents.slice(-5000);
+      // Update team-level cached metrics with bounds checking
+      for (const [teamId, metrics] of this.teamMetrics) {
+        if (typeof metrics === 'object' && metrics.velocity) {
+          // Update trend analysis
+          if (!metrics.velocity.historical) {
+            metrics.velocity.historical = [];
+          }
+
+          // Add current velocity to historical data
+          if (metrics.velocity.current > 0) {
+            metrics.velocity.historical.push(metrics.velocity.current);
+            // Keep only last 10 data points for trend analysis
+            if (metrics.velocity.historical.length > 10) {
+              metrics.velocity.historical = metrics.velocity.historical.slice(-10);
+            }
+
+            // Update trend
+            metrics.velocity.trend = this.calculateTrend(metrics.velocity.historical);
+          }
+        }
+
+        // Update team metrics timestamp
+        if (typeof metrics === 'object') {
+          metrics.lastUpdated = new Date();
+        }
+
+        // Add processing time check
+        const processingTime = Date.now() - startTime;
+        if (processingTime > 100) {
+          console.warn(`⚠️ Team metrics update taking too long: ${processingTime}ms`);
+          break; // Stop processing if taking too long
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error updating team metrics:', error);
+    }
+  }
+
+  updateProjectMetrics() {
+    // Update project-level cached metrics
+    for (const [projectId, metrics] of this.projectMetrics) {
+      if (typeof metrics === 'object') {
+        // Update completion rate calculations
+        if (metrics.completion_rate) {
+          const total = metrics.completion_rate.onTime +
+                       metrics.completion_rate.delayed +
+                       metrics.completion_rate.early;
+
+          if (total > 0) {
+            metrics.completion_rate.current = metrics.completion_rate.onTime / total;
+          }
+        }
+
+        // Update resource efficiency
+        if (metrics.resource_efficiency && metrics.resource_efficiency.allocation) {
+          let totalUtilization = 0;
+          let totalCapacity = 0;
+
+          for (const [resourceId, data] of metrics.resource_efficiency.allocation) {
+            if (typeof data === 'object' && data.utilization && data.capacity) {
+              totalUtilization += data.utilization;
+              totalCapacity += data.capacity;
+            }
+          }
+
+          if (totalCapacity > 0) {
+            metrics.resource_efficiency.current = totalUtilization / totalCapacity;
+          }
+        }
+
+        // Update timestamp
+        metrics.lastUpdated = new Date();
+      }
+    }
+  }
+
+  updatePerformanceTrends() {
+    // Calculate and update overall performance trends
+    const teamVelocities = [];
+    const qualityScores = [];
+
+    // Aggregate data from all teams
+    for (const [teamId, metrics] of this.teamMetrics) {
+      if (typeof metrics === 'object') {
+        if (metrics.velocity && metrics.velocity.current) {
+          teamVelocities.push(metrics.velocity.current);
+        }
+        if (metrics.quality && metrics.quality.current) {
+          qualityScores.push(metrics.quality.current);
+        }
+      }
+    }
+
+    // Calculate overall trends
+    const overallTrends = {
+      velocity: {
+        average: teamVelocities.length > 0 ?
+          teamVelocities.reduce((sum, v) => sum + v, 0) / teamVelocities.length : 0,
+        trend: this.calculateTrend(teamVelocities),
+        distribution: this.calculateDistribution(teamVelocities)
+      },
+      quality: {
+        average: qualityScores.length > 0 ?
+          qualityScores.reduce((sum, q) => sum + q, 0) / qualityScores.length : 0,
+        trend: this.calculateTrend(qualityScores),
+        distribution: this.calculateDistribution(qualityScores)
+      },
+      timestamp: new Date()
+    };
+
+    // Store trends
+    this.metrics.set('overall_trends', overallTrends);
+    this.emit('trendsUpdated', overallTrends);
+  }
+
+  // Missing velocity metric update methods
+  updateVelocityMetrics(event) {
+    if (!event.teamId) return;
+
+    const teamMetrics = this.teamMetrics.get(event.teamId) || this.initializeTeamMetrics(event.teamId);
+
+    if (teamMetrics.velocity) {
+      teamMetrics.velocity.current += event.storyPoints || 1;
+      teamMetrics.velocity.historical.push(teamMetrics.velocity.current);
+
+      // Keep historical data manageable
+      if (teamMetrics.velocity.historical.length > 20) {
+        teamMetrics.velocity.historical = teamMetrics.velocity.historical.slice(-15);
+      }
+    }
+
+    this.teamMetrics.set(event.teamId, teamMetrics);
+  }
+
+  updateProductivityMetrics(event) {
+    if (!event.teamId && !event.userId) return;
+
+    const teamId = event.teamId || `team_${event.userId}`;
+    const teamMetrics = this.teamMetrics.get(teamId) || this.initializeTeamMetrics(teamId);
+
+    if (teamMetrics.productivity) {
+      // Update development time factor
+      teamMetrics.productivity.factors.development_time += 0.1;
+
+      // Recalculate productivity score
+      const factors = teamMetrics.productivity.factors;
+      const score = (
+        factors.focus_time * 0.3 +
+        factors.collaboration_time * 0.2 +
+        factors.development_time * 0.4 +
+        (1 - factors.meeting_time) * 0.1
+      );
+      teamMetrics.productivity.current = Math.min(1, score);
+    }
+
+    this.teamMetrics.set(teamId, teamMetrics);
+  }
+
+  updateCollaborationMetrics(event) {
+    if (!event.teamId && !event.userId) return;
+
+    const teamId = event.teamId || `team_${event.userId}`;
+    const teamMetrics = this.teamMetrics.get(teamId) || this.initializeTeamMetrics(teamId);
+
+    if (teamMetrics.productivity) {
+      // Update collaboration time
+      teamMetrics.productivity.factors.collaboration_time += 0.05;
+      teamMetrics.productivity.factors.collaboration_time = Math.min(1,
+        teamMetrics.productivity.factors.collaboration_time);
+    }
+
+    this.teamMetrics.set(teamId, teamMetrics);
+  }
+
+  updateTimeAllocationMetrics(event) {
+    if (!event.teamId && !event.userId) return;
+
+    const teamId = event.teamId || `team_${event.userId}`;
+    const teamMetrics = this.teamMetrics.get(teamId) || this.initializeTeamMetrics(teamId);
+
+    if (teamMetrics.productivity) {
+      // Update meeting time factor
+      teamMetrics.productivity.factors.meeting_time += 0.1;
+      teamMetrics.productivity.factors.meeting_time = Math.min(1,
+        teamMetrics.productivity.factors.meeting_time);
+    }
+
+    this.teamMetrics.set(teamId, teamMetrics);
+  }
+
+  initializeTeamMetrics(teamId) {
+    return {
+      velocity: {
+        current: 0,
+        historical: [],
+        trend: 'stable',
+        target: 100
+      },
+      productivity: {
+        current: 0,
+        historical: [],
+        factors: {
+          focus_time: 0.8,
+          collaboration_time: 0.6,
+          meeting_time: 0.2,
+          development_time: 0.7
+        }
+      },
+      quality: {
+        current: 0.8,
+        defect_rate: 0.05,
+        code_review_coverage: 0.9,
+        test_coverage: 0.85
+      },
+      lastUpdated: new Date()
+    };
+  }
+
+  calculateDistribution(values) {
+    if (values.length === 0) return { min: 0, max: 0, stdDev: 0 };
+
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
+    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+    const stdDev = Math.sqrt(variance);
+
+    return { min, max, mean, stdDev };
+  }
+
+  // Missing insight generation methods
+  generateTeamInsights() {
+    const insights = [];
+
+    for (const [teamId, metrics] of this.teamMetrics) {
+      if (typeof metrics === 'object') {
+        const insight = {
+          teamId,
+          velocity: metrics.velocity,
+          productivity: metrics.productivity,
+          quality: metrics.quality,
+          recommendations: this.generateTeamRecommendations(metrics)
+        };
+        insights.push(insight);
+      }
+    }
+
+    return insights;
+  }
+
+  generateProjectInsights() {
+    const insights = [];
+
+    for (const [projectId, metrics] of this.projectMetrics) {
+      if (typeof metrics === 'object') {
+        const insight = {
+          projectId,
+          completionRate: metrics.completion_rate,
+          resourceEfficiency: metrics.resource_efficiency,
+          complexityAnalysis: metrics.complexity_analysis,
+          recommendations: this.generateProjectRecommendations(metrics)
+        };
+        insights.push(insight);
+      }
+    }
+
+    return insights;
+  }
+
+  generateOptimizationInsights() {
+    const overallTrends = this.metrics.get('overall_trends');
+    if (!overallTrends) return [];
+
+    const insights = [];
+
+    // Velocity optimization insights
+    if (overallTrends.velocity.trend === 'declining') {
+      insights.push({
+        type: 'velocity_optimization',
+        priority: 'high',
+        message: 'Team velocity is declining across projects',
+        recommendation: 'Review workload distribution and remove blockers',
+        impact: 'Potential 15-20% velocity improvement'
+      });
+    }
+
+    // Quality optimization insights
+    if (overallTrends.quality.average < 0.8) {
+      insights.push({
+        type: 'quality_optimization',
+        priority: 'high',
+        message: 'Overall quality metrics below target threshold',
+        recommendation: 'Increase code review frequency and test coverage',
+        impact: 'Reduce defects by 25-30%'
+      });
+    }
+
+    return insights;
+  }
+
+  generatePredictiveInsights() {
+    const overallTrends = this.metrics.get('overall_trends');
+    if (!overallTrends) return {};
+
+    return {
+      velocityForecast: this.forecastVelocity(overallTrends.velocity),
+      qualityPrediction: this.predictQualityTrend(overallTrends.quality),
+      resourceDemand: this.predictResourceDemand(),
+      riskFactors: this.identifyRiskFactors()
+    };
+  }
+
+  generateTeamRecommendations(metrics) {
+    const recommendations = [];
+
+    if (metrics.velocity && metrics.velocity.trend === 'declining') {
+      recommendations.push({
+        area: 'Velocity',
+        action: 'Review and reduce blockers',
+        priority: 'high'
+      });
+    }
+
+    if (metrics.productivity && metrics.productivity.current < 0.7) {
+      recommendations.push({
+        area: 'Productivity',
+        action: 'Optimize focus time and reduce meetings',
+        priority: 'medium'
+      });
+    }
+
+    return recommendations;
+  }
+
+  generateProjectRecommendations(metrics) {
+    const recommendations = [];
+
+    if (metrics.completion_rate && metrics.completion_rate.current < 0.8) {
+      recommendations.push({
+        area: 'Delivery',
+        action: 'Review project timeline and resource allocation',
+        priority: 'high'
+      });
+    }
+
+    return recommendations;
+  }
+
+  forecastVelocity(velocityData) {
+    if (!velocityData.trend || velocityData.average === 0) {
+      return { forecast: velocityData.average, confidence: 0.5 };
+    }
+
+    const trendMultiplier = velocityData.trend === 'improving' ? 1.1 :
+                           velocityData.trend === 'declining' ? 0.9 : 1.0;
+
+    return {
+      forecast: velocityData.average * trendMultiplier,
+      confidence: 0.75,
+      trend: velocityData.trend
+    };
+  }
+
+  predictQualityTrend(qualityData) {
+    return {
+      predicted: qualityData.average,
+      confidence: 0.8,
+      trend: qualityData.trend
+    };
+  }
+
+  predictResourceDemand() {
+    const teamCount = this.teamMetrics.size;
+    const avgUtilization = 0.8; // Default assumption
+
+    return {
+      currentDemand: teamCount * avgUtilization,
+      projectedDemand: teamCount * avgUtilization * 1.1,
+      recommendedCapacity: teamCount * 1.2
+    };
+  }
+
+  identifyRiskFactors() {
+    const risks = [];
+    const overallTrends = this.metrics.get('overall_trends');
+
+    if (overallTrends && overallTrends.velocity.trend === 'declining') {
+      risks.push({
+        factor: 'velocity_decline',
+        severity: 'medium',
+        description: 'Team velocity showing declining trend'
+      });
+    }
+
+    return risks;
+  }
+
+  // Additional calculation helper methods
+  calculateTeamCapacity(capacityData) {
+    const totalCapacity = capacityData.totalCapacity || 200;
+    const currentAllocation = capacityData.currentAllocation || 170;
+
+    return {
+      current: totalCapacity,
+      projected: totalCapacity * 1.1,
+      available: totalCapacity - currentAllocation
+    };
+  }
+
+  calculateUtilization(capacityData) {
+    const capacity = capacityData.totalCapacity || 200;
+    const allocation = capacityData.currentAllocation || 170;
+
+    const rate = capacity > 0 ? allocation / capacity : 0;
+
+    return {
+      rate: Math.min(1, rate),
+      trend: rate > 0.9 ? 'high' : rate > 0.7 ? 'optimal' : 'low'
+    };
+  }
+
+  forecastCapacityNeeds(capacityData) {
+    const currentRate = capacityData.currentAllocation / capacityData.totalCapacity;
+
+    return {
+      nextSprint: capacityData.totalCapacity * currentRate * 1.05,
+      nextQuarter: capacityData.totalCapacity * currentRate * 1.15,
+      confidence: 0.8
+    };
+  }
+
+  generateCapacityRecommendations(capacity, utilization, forecast) {
+    const recommendations = [];
+
+    if (utilization.rate > 0.9) {
+      recommendations.push({
+        type: 'capacity_expansion',
+        priority: 'high',
+        action: 'Consider adding team members or redistributing workload',
+        impact: 'Prevent burnout and maintain quality'
+      });
+    }
+
+    if (forecast.confidence < 0.7) {
+      recommendations.push({
+        type: 'planning_improvement',
+        priority: 'medium',
+        action: 'Improve capacity planning accuracy',
+        impact: 'Better resource allocation decisions'
+      });
+    }
+
+    return recommendations;
+  }
+
+  calculateSkillMatch(member, requirements) {
+    if (!member.skills || !requirements) {
+      return { score: 0.5, recommendedTasks: [] };
+    }
+
+    const skillMatches = requirements.filter(req =>
+      member.skills.includes(req)).length;
+    const score = requirements.length > 0 ? skillMatches / requirements.length : 0.5;
+
+    return {
+      score: Math.min(1, score),
+      recommendedTasks: requirements.filter(req => member.skills.includes(req))
+    };
+  }
+
+  calculateOptimalWorkload(member) {
+    const currentAllocation = member.allocation || 1.0;
+    const currentUtilization = member.utilization || 0.8;
+
+    // Optimal range is 0.75-0.9 utilization
+    let optimal = currentAllocation;
+    if (currentUtilization > 0.9) {
+      optimal = currentAllocation * 0.9; // Reduce workload
+    } else if (currentUtilization < 0.75) {
+      optimal = Math.min(1.0, currentAllocation * 1.1); // Increase workload
+    }
+
+    const gain = Math.abs(optimal - currentAllocation) / currentAllocation;
+
+    return {
+      optimal,
+      gain,
+      recommendation: optimal > currentAllocation ? 'increase' :
+                     optimal < currentAllocation ? 'decrease' : 'maintain'
+    };
+  }
+
+  generateOptimizationSteps(optimization) {
+    const steps = [];
+
+    for (const [memberId, member] of optimization) {
+      if (member.efficiency_gain > 0.1) {
+        steps.push({
+          member: member.name,
+          action: `Adjust allocation from ${member.allocation} to ${member.optimized_allocation}`,
+          timeline: '1 week',
+          expectedGain: `${Math.round(member.efficiency_gain * 100)}% efficiency improvement`
+        });
+      }
+    }
+
+    return steps;
+  }
+
+  calculateOptimizationTimeline(steps) {
+    // Simple timeline calculation based on number of steps
+    const weeks = Math.ceil(steps.length / 3); // Process 3 changes per week
+    return {
+      duration: `${weeks} week${weeks !== 1 ? 's' : ''}`,
+      phases: steps.length > 3 ? ['preparation', 'implementation', 'validation'] : ['implementation']
+    };
+  }
+
+  identifyResourceRisks(projectData) {
+    const risks = [];
+
+    if (projectData.burnRate > 0.15) {
+      risks.push({
+        risk: 'high_burn_rate',
+        severity: 'high',
+        description: 'Project consuming resources faster than planned'
+      });
+    }
+
+    if (projectData.progress < 0.3 && projectData.timeRemaining < 4) {
+      risks.push({
+        risk: 'timeline_pressure',
+        severity: 'critical',
+        description: 'Insufficient time remaining for current progress'
+      });
+    }
+
+    return risks;
+  }
+
+  calculatePredictionConfidence(projectData) {
+    const factors = [
+      projectData.progress || 0,
+      projectData.team?.length || 0,
+      projectData.burnRate ? 1 : 0
+    ];
+
+    const completeness = factors.filter(f => f > 0).length / factors.length;
+    return Math.min(0.95, 0.5 + (completeness * 0.4));
+  }
+
+  // Enhanced event recording with safety checks
+  recordEvent(event) {
+    try {
+      // Input validation
+      if (!event || typeof event !== 'object') {
+        console.warn('⚠️ Invalid event data provided to recordEvent');
+        return;
+      }
+
+      this.realTimeEvents.push({
+        ...event,
+        timestamp: Date.now()
+      });
+
+      // Maintain event queue size for performance with more aggressive pruning
+      if (this.realTimeEvents.length > 5000) {
+        this.realTimeEvents = this.realTimeEvents.slice(-2000);
+      }
+    } catch (error) {
+      console.error('❌ Error recording event:', error);
     }
   }
 
@@ -775,6 +1401,22 @@ class PerformanceTracker extends EventEmitter {
       realTimeQueueSize: this.realTimeEvents.length,
       timestamp: new Date()
     };
+  }
+
+  // Cleanup method for tests
+  cleanup() {
+    // Clear all intervals
+    this.intervals.forEach(interval => clearInterval(interval));
+    this.intervals = [];
+
+    // Remove all listeners
+    this.removeAllListeners();
+
+    // Clear data structures
+    this.metrics.clear();
+    this.teamMetrics.clear();
+    this.projectMetrics.clear();
+    this.realTimeEvents.length = 0;
   }
 }
 

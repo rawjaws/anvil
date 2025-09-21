@@ -22,6 +22,9 @@ import Layout from './components/Layout'
 import RealtimeNotifications from './components/RealtimeNotifications.jsx'
 import { useRealtime } from './hooks/useRealtime.js'
 import { useRealtimeNotifications } from './hooks/useRealtimeNotifications.js'
+import ErrorBoundary from './components/ErrorBoundary'
+import AIWorkflowErrorBoundary from './components/AIWorkflowErrorBoundary'
+import AccessibilityEnhancer from './components/AccessibilityEnhancer'
 
 // Lazy load components for better performance
 const Dashboard = lazy(() => import('./components/Dashboard'))
@@ -35,6 +38,7 @@ const Discovery = lazy(() => import('./components/Discovery'))
 const FeatureManagementDashboard = lazy(() => import('./components/FeatureToggle').then(module => ({ default: module.FeatureManagementDashboard })))
 const AdvancedAnalytics = lazy(() => import('./components/AdvancedAnalytics'))
 const RequirementsPrecision = lazy(() => import('./components/RequirementsPrecision'))
+const IntelligenceDashboard = lazy(() => import('./components/IntelligenceDashboard'))
 
 // Marketplace components
 const TemplateBrowser = lazy(() => import('./components/Marketplace/TemplateBrowser'))
@@ -42,28 +46,118 @@ const TemplateGenerator = lazy(() => import('./components/Marketplace/TemplateGe
 const CommunityHub = lazy(() => import('./components/Marketplace/CommunityHub'))
 const MarketplaceTemplateEditor = lazy(() => import('./components/Marketplace/TemplateEditor'))
 
-// Loading fallback component
-const LoadingSpinner = () => (
-  <div className="loading-container" style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '200px',
-    fontSize: '16px',
-    color: '#6b7280'
-  }}>
-    <div className="loading-spinner" style={{
-      width: '20px',
-      height: '20px',
-      border: '2px solid #e5e7eb',
-      borderTop: '2px solid #3b82f6',
-      borderRadius: '50%',
-      animation: 'spin 1s linear infinite',
-      marginRight: '10px'
-    }}></div>
-    Loading...
-  </div>
-)
+// THE HAMMER'S OPTIMIZATION: Enhanced Loading Component with Accessibility
+const LoadingSpinner = ({ message = 'Loading...', size = 'medium' }) => {
+  const sizeClasses = {
+    small: { spinner: '16px', container: '100px', fontSize: '14px' },
+    medium: { spinner: '24px', container: '200px', fontSize: '16px' },
+    large: { spinner: '32px', container: '300px', fontSize: '18px' }
+  };
+
+  const config = sizeClasses[size];
+
+  return (
+    <div
+      className="loading-container"
+      role="status"
+      aria-live="polite"
+      aria-label={message}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: config.container,
+        padding: '2rem',
+        fontSize: config.fontSize,
+        color: '#6b7280'
+      }}
+    >
+      <div
+        className="loading-spinner"
+        aria-hidden="true"
+        style={{
+          width: config.spinner,
+          height: config.spinner,
+          border: '3px solid #e5e7eb',
+          borderTop: '3px solid #3b82f6',
+          borderRadius: '50%',
+          animation: 'hammer-spin 1s linear infinite',
+          marginBottom: '1rem'
+        }}
+      ></div>
+
+      <div className="loading-text" style={{
+        textAlign: 'center',
+        fontWeight: '500',
+        letterSpacing: '0.025em'
+      }}>
+        {message}
+      </div>
+
+      <div className="loading-dots" style={{
+        marginTop: '0.5rem',
+        display: 'flex',
+        gap: '4px'
+      }}>
+        {[0, 1, 2].map(i => (
+          <div
+            key={i}
+            style={{
+              width: '4px',
+              height: '4px',
+              borderRadius: '50%',
+              backgroundColor: '#9ca3af',
+              animation: `hammer-pulse 1.5s infinite ${i * 0.2}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <style jsx>{`
+        @keyframes hammer-spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        @keyframes hammer-pulse {
+          0%, 80%, 100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+          }
+          40% {
+            transform: scale(1.2);
+            opacity: 1;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .loading-container {
+            padding: 1rem !important;
+            min-height: ${parseInt(config.container) * 0.7}px !important;
+            font-size: ${parseInt(config.fontSize) - 2}px !important;
+          }
+
+          .loading-spinner {
+            width: ${parseInt(config.spinner) * 0.8}px !important;
+            height: ${parseInt(config.spinner) * 0.8}px !important;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .loading-spinner {
+            animation: none !important;
+          }
+
+          .loading-dots div {
+            animation: none !important;
+            opacity: 0.7 !important;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 // Component to handle real-time features within the router context
 function AppWithRealtime() {
@@ -107,35 +201,126 @@ function AppWithRealtime() {
   ) : null;
 
   return (
-    <Layout realtimeNotifications={realtimeNotifications}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/agents" element={<AgentDashboard />} />
-          <Route path="/discovery" element={<Discovery />} />
-          <Route path="/features" element={<FeatureManagementDashboard />} />
-          <Route path="/analytics" element={<AdvancedAnalytics />} />
-          <Route path="/validation" element={<RequirementsPrecision />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/view/:type/*" element={<DocumentView />} />
-          <Route path="/edit/template/*" element={<TemplateEditor />} />
-          <Route path="/edit/:type/*" element={<DocumentEditor />} />
-          <Route path="/collaborate/:type/*" element={<CollaborativeEditor />} />
-          <Route path="/create/:type" element={<DocumentEditor />} />
-          <Route path="/create/:type/for/:capabilityId" element={<DocumentEditor />} />
-          <Route path="/create-collaborative/:type" element={<CollaborativeEditor />} />
-          <Route path="/create-collaborative/:type/for/:capabilityId" element={<CollaborativeEditor />} />
+    <ErrorBoundary level="page">
+      <Layout realtimeNotifications={realtimeNotifications}>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route path="/" element={
+              <ErrorBoundary level="component">
+                <Dashboard />
+              </ErrorBoundary>
+            } />
+            <Route path="/agents" element={
+              <AIWorkflowErrorBoundary>
+                <AgentDashboard />
+              </AIWorkflowErrorBoundary>
+            } />
+            <Route path="/discovery" element={
+              <ErrorBoundary level="component">
+                <Discovery />
+              </ErrorBoundary>
+            } />
+            <Route path="/intelligence" element={
+              <AIWorkflowErrorBoundary>
+                <IntelligenceDashboard />
+              </AIWorkflowErrorBoundary>
+            } />
+            <Route path="/features" element={
+              <ErrorBoundary level="component">
+                <FeatureManagementDashboard />
+              </ErrorBoundary>
+            } />
+            <Route path="/analytics" element={
+              <ErrorBoundary level="component">
+                <AdvancedAnalytics />
+              </ErrorBoundary>
+            } />
+            <Route path="/validation" element={
+              <AIWorkflowErrorBoundary>
+                <RequirementsPrecision />
+              </AIWorkflowErrorBoundary>
+            } />
+            <Route path="/settings" element={
+              <ErrorBoundary level="component">
+                <Settings />
+              </ErrorBoundary>
+            } />
+            <Route path="/view/:type/*" element={
+              <ErrorBoundary level="component">
+                <DocumentView />
+              </ErrorBoundary>
+            } />
+            <Route path="/edit/template/*" element={
+              <ErrorBoundary level="component">
+                <TemplateEditor />
+              </ErrorBoundary>
+            } />
+            <Route path="/edit/:type/*" element={
+              <ErrorBoundary level="component">
+                <DocumentEditor />
+              </ErrorBoundary>
+            } />
+            <Route path="/collaborate/:type/*" element={
+              <ErrorBoundary level="component">
+                <CollaborativeEditor />
+              </ErrorBoundary>
+            } />
+            <Route path="/create/:type" element={
+              <ErrorBoundary level="component">
+                <DocumentEditor />
+              </ErrorBoundary>
+            } />
+            <Route path="/create/:type/for/:capabilityId" element={
+              <ErrorBoundary level="component">
+                <DocumentEditor />
+              </ErrorBoundary>
+            } />
+            <Route path="/create-collaborative/:type" element={
+              <ErrorBoundary level="component">
+                <CollaborativeEditor />
+              </ErrorBoundary>
+            } />
+            <Route path="/create-collaborative/:type/for/:capabilityId" element={
+              <ErrorBoundary level="component">
+                <CollaborativeEditor />
+              </ErrorBoundary>
+            } />
 
-          {/* Marketplace Routes */}
-          <Route path="/marketplace" element={<TemplateBrowser />} />
-          <Route path="/marketplace/browse" element={<TemplateBrowser />} />
-          <Route path="/marketplace/generate" element={<TemplateGenerator />} />
-          <Route path="/marketplace/community" element={<CommunityHub />} />
-          <Route path="/marketplace/editor" element={<MarketplaceTemplateEditor />} />
-          <Route path="/marketplace/editor/:templateId" element={<MarketplaceTemplateEditor />} />
-        </Routes>
-      </Suspense>
-    </Layout>
+            {/* Marketplace Routes */}
+            <Route path="/marketplace" element={
+              <ErrorBoundary level="component">
+                <TemplateBrowser />
+              </ErrorBoundary>
+            } />
+            <Route path="/marketplace/browse" element={
+              <ErrorBoundary level="component">
+                <TemplateBrowser />
+              </ErrorBoundary>
+            } />
+            <Route path="/marketplace/generate" element={
+              <AIWorkflowErrorBoundary>
+                <TemplateGenerator />
+              </AIWorkflowErrorBoundary>
+            } />
+            <Route path="/marketplace/community" element={
+              <ErrorBoundary level="component">
+                <CommunityHub />
+              </ErrorBoundary>
+            } />
+            <Route path="/marketplace/editor" element={
+              <ErrorBoundary level="component">
+                <MarketplaceTemplateEditor />
+              </ErrorBoundary>
+            } />
+            <Route path="/marketplace/editor/:templateId" element={
+              <ErrorBoundary level="component">
+                <MarketplaceTemplateEditor />
+              </ErrorBoundary>
+            } />
+          </Routes>
+        </Suspense>
+      </Layout>
+    </ErrorBoundary>
   );
 }
 
@@ -143,9 +328,11 @@ function App() {
   return (
     <AppProvider>
       <FeatureProvider>
-        <Router>
-          <AppWithRealtime />
-        </Router>
+        <AccessibilityEnhancer>
+          <Router>
+            <AppWithRealtime />
+          </Router>
+        </AccessibilityEnhancer>
       </FeatureProvider>
     </AppProvider>
   )

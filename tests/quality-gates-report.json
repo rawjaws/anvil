@@ -3,7 +3,7 @@
     {
       "name": "Code Quality",
       "status": "FAILED",
-      "duration": 8710,
+      "duration": 8123,
       "details": "ESLint violations found. Run npm run lint:fix to resolve.",
       "warnings": [],
       "metrics": {}
@@ -11,63 +11,55 @@
     {
       "name": "Integration Tests",
       "status": "FAILED",
-      "duration": 23810,
-      "details": "Integration tests failed: Command failed: npm run test:integration\nFAIL tests/integration/parallel-development/concurrent-features.test.js (5.648 s)\n  ● Parallel Feature Development Integration › Branch Safety Simulation › Feature state changes simulate branch merge safety\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: true\n    Received: false\n\n      237 |       const mergedState = await axios.get(`${BASE_URL}/api/features`)\n      238 |       expect(mergedState.data.features.collaborativeReviews.enabled).toBe(branch1Changes.collaborativeReviews.enabled)\n    > 239 |       expect(mergedState.data.features.aiWorkflowAutomation.enabled).toBe(branch2Changes.aiWorkflowAutomation.enabled)\n          |                                                                      ^\n      240 |\n      241 |       // Restore original state\n      242 |       await Promise.all([\n\n      at Object.toBe (tests/integration/parallel-development/concurrent-features.test.js:239:70)\n\nnode:internal/child_process/serialization:159\n    const string = JSONStringify(message) + '\\n';\n                   ^\n\nTypeError: Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    |     property 'socket' -> object with constructor 'Object'\n    --- property '_httpMessage' closes the circle\n    at stringify (<anonymous>)\n    at writeChannelMessage (node:internal/child_process/serialization:159:20)\n    at process.target._send (node:internal/child_process:845:17)\n    at process.target.send (node:internal/child_process:745:19)\n    at reportSuccess (/mnt/c/Users/Mike/Documents/Anvil/anvil-main/anvil-main/anvil/node_modules/jest-worker/build/workers/processChild.js:82:11)\n\nNode.js v18.19.1\nPASS tests/integration/feature-system.test.js (6.88 s)\n\nTest Suites: 1 failed, 1 passed, 2 total\nTests:       1 failed, 17 passed, 18 total\nSnapshots:   0 total\nTime:        15.597 s\nRan all test suites matching /tests\\/integration\\//i.\n",
+      "duration": 14997,
+      "details": "Integration tests failed: Command failed: npm run test:integration\nPASS tests/integration/feature-system.test.js\nFAIL tests/integration/parallel-development/concurrent-features.test.js\n  ● Parallel Feature Development Integration › Concurrent Development Safety › Feature registry remains consistent during parallel updates\n\n    AxiosError: Request failed with status code 500\n\n      126 |\n      127 |       // Get baseline state\n    > 128 |       const baselineResponse = await axios.get(`${BASE_URL}/api/features`)\n          |                                ^\n      129 |       const baselineFeatures = baselineResponse.data.features\n      130 |\n      131 |       // Simulate Team 1 working with their features\n\n      at settle (node_modules/axios/lib/core/settle.js:19:12)\n      at IncomingMessage.handleStreamEnd (node_modules/axios/lib/adapters/http.js:617:11)\n      at Axios.request (node_modules/axios/lib/core/Axios.js:45:41)\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:128:32)\n\n  ● Parallel Feature Development Integration › Integration Point Validation › All team features maintain API contract compliance\n\n    AxiosError: Request failed with status code 500\n\n      167 |   describe('Integration Point Validation', () => {\n      168 |     test('All team features maintain API contract compliance', async () => {\n    > 169 |       const response = await axios.get(`${BASE_URL}/api/features`)\n          |                        ^\n      170 |       const features = response.data.features\n      171 |\n      172 |       // Real-time collaboration features\n\n      at settle (node_modules/axios/lib/core/settle.js:19:12)\n      at IncomingMessage.handleStreamEnd (node_modules/axios/lib/adapters/http.js:617:11)\n      at Axios.request (node_modules/axios/lib/core/Axios.js:45:41)\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:169:24)\n\n  ● Parallel Feature Development Integration › Integration Point Validation › Performance endpoints remain responsive during parallel development\n\n    AxiosError: Request failed with status code 500\n\n      197 |       ]\n      198 |\n    > 199 |       const responses = await Promise.all(requests)\n          |                         ^\n      200 |       const endTime = Date.now()\n      201 |\n      202 |       // All requests should succeed\n\n      at settle (node_modules/axios/lib/core/settle.js:19:12)\n      at IncomingMessage.handleStreamEnd (node_modules/axios/lib/adapters/http.js:617:11)\n      at Axios.request (node_modules/axios/lib/core/Axios.js:45:41)\n          at async Promise.all (index 0)\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:199:25)\n\n  ● Parallel Feature Development Integration › Branch Safety Simulation › Feature state changes simulate branch merge safety\n\n    AxiosError: Request failed with status code 500\n\n      215 |     test('Feature state changes simulate branch merge safety', async () => {\n      216 |       // Simulate what happens when feature branches merge\n    > 217 |       const initialState = await axios.get(`${BASE_URL}/api/features`)\n          |                            ^\n      218 |       const features = initialState.data.features\n      219 |\n      220 |       // Simulate \"branch 1\" - real-time collaboration changes\n\n      at settle (node_modules/axios/lib/core/settle.js:19:12)\n      at IncomingMessage.handleStreamEnd (node_modules/axios/lib/adapters/http.js:617:11)\n      at Axios.request (node_modules/axios/lib/core/Axios.js:45:41)\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:217:28)\n\nTest Suites: 1 failed, 1 passed, 2 total\nTests:       4 failed, 14 passed, 18 total\nSnapshots:   0 total\nTime:        6.995 s, estimated 7 s\nRan all test suites matching /tests\\/integration\\//i.\n",
       "warnings": [],
       "metrics": {}
     },
     {
       "name": "Feature Isolation",
-      "status": "PASSED",
-      "duration": 83,
-      "details": "Feature isolation validated successfully",
+      "status": "FAILED",
+      "duration": 74,
+      "details": "Feature isolation validation failed: Request failed with status code 500",
       "warnings": [],
-      "metrics": {
-        "featuresChecked": 6
-      }
+      "metrics": {}
     },
     {
       "name": "Performance Baseline",
       "status": "FAILED",
-      "duration": 1599,
-      "details": "Performance baseline file missing. Run npm run performance:baseline first.",
+      "duration": 1188,
+      "details": "Performance validation failed: Command failed: npm run test:regression",
       "warnings": [],
       "metrics": {}
     },
     {
       "name": "Concurrent Development Safety",
-      "status": "PASSED",
-      "duration": 15580,
-      "details": "Concurrent development safety validated",
+      "status": "FAILED",
+      "duration": 25355,
+      "details": "Concurrent safety validation failed: Command failed: npx jest tests/integration/parallel-development/concurrent-features.test.js --verbose\nFAIL tests/integration/parallel-development/concurrent-features.test.js (16.06 s)\n  Parallel Feature Development Integration\n    Feature Isolation Tests\n      ✕ Real-time collaboration features do not interfere with AI workflow features (6 ms)\n      ✕ AI workflow features do not interfere with real-time collaboration features\n    Concurrent Development Safety\n      ✕ Multiple feature updates can happen simultaneously\n      ✕ Feature registry remains consistent during parallel updates (1 ms)\n    Integration Point Validation\n      ✕ All team features maintain API contract compliance\n      ✕ Performance endpoints remain responsive during parallel development\n    Branch Safety Simulation\n      ✕ Feature state changes simulate branch merge safety\n\n  ● Parallel Feature Development Integration › Feature Isolation Tests › Real-time collaboration features do not interfere with AI workflow features\n\n    Server not available after 10 retries\n\n      24 |         retries++\n      25 |         if (retries === maxRetries) {\n    > 26 |           throw new Error('Server not available after 10 retries')\n         |                 ^\n      27 |         }\n      28 |         await new Promise(resolve => setTimeout(resolve, 1000))\n      29 |       }\n\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:26:17)\n\n  ● Parallel Feature Development Integration › Feature Isolation Tests › AI workflow features do not interfere with real-time collaboration features\n\n    Server not available after 10 retries\n\n      24 |         retries++\n      25 |         if (retries === maxRetries) {\n    > 26 |           throw new Error('Server not available after 10 retries')\n         |                 ^\n      27 |         }\n      28 |         await new Promise(resolve => setTimeout(resolve, 1000))\n      29 |       }\n\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:26:17)\n\n  ● Parallel Feature Development Integration › Concurrent Development Safety › Multiple feature updates can happen simultaneously\n\n    Server not available after 10 retries\n\n      24 |         retries++\n      25 |         if (retries === maxRetries) {\n    > 26 |           throw new Error('Server not available after 10 retries')\n         |                 ^\n      27 |         }\n      28 |         await new Promise(resolve => setTimeout(resolve, 1000))\n      29 |       }\n\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:26:17)\n\n  ● Parallel Feature Development Integration › Concurrent Development Safety › Feature registry remains consistent during parallel updates\n\n    Server not available after 10 retries\n\n      24 |         retries++\n      25 |         if (retries === maxRetries) {\n    > 26 |           throw new Error('Server not available after 10 retries')\n         |                 ^\n      27 |         }\n      28 |         await new Promise(resolve => setTimeout(resolve, 1000))\n      29 |       }\n\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:26:17)\n\n  ● Parallel Feature Development Integration › Integration Point Validation › All team features maintain API contract compliance\n\n    Server not available after 10 retries\n\n      24 |         retries++\n      25 |         if (retries === maxRetries) {\n    > 26 |           throw new Error('Server not available after 10 retries')\n         |                 ^\n      27 |         }\n      28 |         await new Promise(resolve => setTimeout(resolve, 1000))\n      29 |       }\n\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:26:17)\n\n  ● Parallel Feature Development Integration › Integration Point Validation › Performance endpoints remain responsive during parallel development\n\n    Server not available after 10 retries\n\n      24 |         retries++\n      25 |         if (retries === maxRetries) {\n    > 26 |           throw new Error('Server not available after 10 retries')\n         |                 ^\n      27 |         }\n      28 |         await new Promise(resolve => setTimeout(resolve, 1000))\n      29 |       }\n\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:26:17)\n\n  ● Parallel Feature Development Integration › Branch Safety Simulation › Feature state changes simulate branch merge safety\n\n    Server not available after 10 retries\n\n      24 |         retries++\n      25 |         if (retries === maxRetries) {\n    > 26 |           throw new Error('Server not available after 10 retries')\n         |                 ^\n      27 |         }\n      28 |         await new Promise(resolve => setTimeout(resolve, 1000))\n      29 |       }\n\n      at Object.<anonymous> (tests/integration/parallel-development/concurrent-features.test.js:26:17)\n\nTest Suites: 1 failed, 1 total\nTests:       7 failed, 7 total\nSnapshots:   0 total\nTime:        16.769 s\nRan all test suites matching /tests\\/integration\\/parallel-development\\/concurrent-features.test.js/i.\n",
       "warnings": [],
-      "metrics": {
-        "concurrentRequests": 5
-      }
+      "metrics": {}
     },
     {
       "name": "API Contract Compliance",
-      "status": "PASSED",
-      "duration": 12,
-      "details": "API contracts validated successfully",
+      "status": "FAILED",
+      "duration": 11,
+      "details": "API contract validation failed: Request failed with status code 500",
       "warnings": [],
-      "metrics": {
-        "endpointsChecked": 2
-      }
+      "metrics": {}
     },
     {
       "name": "Feature Flag Compatibility",
-      "status": "PASSED",
-      "duration": 26,
-      "details": "Feature flag system validated successfully",
+      "status": "FAILED",
+      "duration": 9,
+      "details": "Feature flag validation failed: Request failed with status code 500",
       "warnings": [],
-      "metrics": {
-        "featuresValidated": 6
-      }
+      "metrics": {}
     }
   ],
-  "passed": 4,
-  "failed": 3,
+  "passed": 0,
+  "failed": 7,
   "warnings": 0,
-  "summary": "❌ 3 quality gate(s) failed. Fix issues before merging.",
-  "timestamp": "2025-09-20T16:14:24.080Z"
+  "summary": "❌ 7 quality gate(s) failed. Fix issues before merging.",
+  "timestamp": "2025-09-21T18:02:44.056Z"
 }

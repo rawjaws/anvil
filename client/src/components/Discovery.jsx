@@ -85,17 +85,17 @@ export default function Discovery() {
       <div className="discovery-header">
         <div className="discovery-title">
           <Lightbulb size={24} />
-          <h1>Discovery</h1>
+          <h1>Sir Percival's Quest</h1>
         </div>
         <div className="discovery-notice">
           <AlertCircle size={20} />
           <p className="discovery-notice-text">
-            <strong>Feature Not Yet Implemented:</strong> This Discovery feature is currently under development.
-            The AI analysis and document generation functionality will be available in a future release.
+            <strong>Quest Not Yet Ready:</strong> Sir Percival's Quest for the Holy Grail is currently under preparation.
+            The mystical analysis and scroll generation functionality will be available in a future release.
           </p>
         </div>
         <p className="discovery-subtitle">
-          Enter or paste text/markdown describing your project requirements. AI will analyze and generate Capabilities, Enablers, and Requirements.
+          Enter or paste text describing your quest requirements. The mystical powers will analyze and generate Capabilities, Enablers, and Requirements.
         </p>
       </div>
 
@@ -131,7 +131,7 @@ export default function Discovery() {
               ) : (
                 <>
                   <Zap size={16} />
-                  Analyze with AI
+                  Divine Analysis
                 </>
               )}
             </button>
@@ -148,7 +148,7 @@ export default function Discovery() {
                 className="discovery-input"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="Enter your project description, requirements, or paste markdown here...
+                placeholder="Enter your quest description, requirements, or paste scrolls here...
 
 Example:
 # E-commerce Platform

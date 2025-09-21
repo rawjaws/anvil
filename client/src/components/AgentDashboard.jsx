@@ -1,6 +1,6 @@
 /**
- * Agent Dashboard Component
- * UI for managing and monitoring AI agents
+ * Knights of the Round Table Component
+ * Command center for managing and monitoring the noble knights
  */
 
 import React, { useState, useEffect } from 'react';
@@ -308,7 +308,7 @@ const AgentDashboard = () => {
       <div className="dashboard-header">
         <h2>
           <Bot size={24} />
-          Agent Control Center
+          Knights of the Round Table
         </h2>
         <button
           className="btn btn-secondary"
@@ -321,8 +321,8 @@ const AgentDashboard = () => {
       <div className="agent-notice">
         <AlertCircle size={20} />
         <p className="agent-notice-text">
-          <strong>Feature Not Yet Implemented:</strong> The Agent Control Center is currently under development.
-          AI agent management and workflow automation will be available in a future release.
+          <strong>Feature Not Yet Implemented:</strong> The Knights of the Round Table are currently gathering their strength.
+          Noble knight management and quest automation will be available in a future release.
         </p>
       </div>
 
@@ -331,19 +331,19 @@ const AgentDashboard = () => {
           className={`tab ${activeTab === 'agents' ? 'active' : ''}`}
           onClick={() => setActiveTab('agents')}
         >
-          <Bot size={16} /> Agents ({agents.length})
+          <Bot size={16} /> Knights ({agents.length})
         </button>
         <button
           className={`tab ${activeTab === 'workflows' ? 'active' : ''}`}
           onClick={() => setActiveTab('workflows')}
         >
-          <Workflow size={16} /> Workflows ({workflows.length})
+          <Workflow size={16} /> Quests ({workflows.length})
         </button>
         <button
           className={`tab ${activeTab === 'jobs' ? 'active' : ''}`}
           onClick={() => setActiveTab('jobs')}
         >
-          <Activity size={16} /> Jobs ({activeJobs.length})
+          <Activity size={16} /> Missions ({activeJobs.length})
         </button>
       </div>
 

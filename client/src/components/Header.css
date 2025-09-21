@@ -120,6 +120,7 @@
 .settings-button,
 .agents-button,
 .discovery-button,
+.intelligence-button,
 .analytics-button,
 .features-button {
   background: none;
@@ -138,6 +139,7 @@
 .settings-button:hover,
 .agents-button:hover,
 .discovery-button:hover,
+.intelligence-button:hover,
 .analytics-button:hover,
 .features-button:hover {
   background: rgba(74, 144, 226, 0.1);
@@ -149,9 +151,24 @@
 .settings-button:active,
 .agents-button:active,
 .discovery-button:active,
+.intelligence-button:active,
 .analytics-button:active,
 .features-button:active {
   transform: scale(0.95);
+}
+
+/* Special styling for Intelligence button */
+.intelligence-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.intelligence-button:hover {
+  background: linear-gradient(135deg, #5a73e8 0%, #6a4298 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {

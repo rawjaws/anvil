@@ -124,43 +124,72 @@ export function useFeatures() {
   return context
 }
 
-// Custom hooks for specific features
-export function useAdvancedAnalytics() {
+// Custom hooks for specific features (Medieval themed)
+export function useMorganasCrystalBall() {
   const { isFeatureEnabled, getFeatureConfig } = useFeatures()
   return {
-    enabled: isFeatureEnabled('advancedAnalytics'),
-    config: getFeatureConfig('advancedAnalytics')
+    enabled: isFeatureEnabled('morganasCrystalBall'),
+    config: getFeatureConfig('morganasCrystalBall')
   }
+}
+
+export function useScribesGuild() {
+  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
+  return {
+    enabled: isFeatureEnabled('scribesGuild'),
+    config: getFeatureConfig('scribesGuild')
+  }
+}
+
+export function useRoundTableCouncil() {
+  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
+  return {
+    enabled: isFeatureEnabled('roundTableCouncil'),
+    config: getFeatureConfig('roundTableCouncil')
+  }
+}
+
+export function useMerlinsQuill() {
+  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
+  return {
+    enabled: isFeatureEnabled('merlinsQuill'),
+    config: getFeatureConfig('merlinsQuill')
+  }
+}
+
+export function useCamelotLibrary() {
+  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
+  return {
+    enabled: isFeatureEnabled('camelotLibrary'),
+    config: getFeatureConfig('camelotLibrary')
+  }
+}
+
+export function useSirLancelotsBlade() {
+  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
+  return {
+    enabled: isFeatureEnabled('sirLancelotsBlade'),
+    config: getFeatureConfig('sirLancelotsBlade')
+  }
+}
+
+// Legacy hooks for backward compatibility
+export function useAdvancedAnalytics() {
+  return useMorganasCrystalBall()
 }
 
 export function useEnhancedExporting() {
-  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
-  return {
-    enabled: isFeatureEnabled('enhancedExporting'),
-    config: getFeatureConfig('enhancedExporting')
-  }
+  return useScribesGuild()
 }
 
 export function useCollaborativeReviews() {
-  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
-  return {
-    enabled: isFeatureEnabled('collaborativeReviews'),
-    config: getFeatureConfig('collaborativeReviews')
-  }
+  return useRoundTableCouncil()
 }
 
 export function useAIWorkflowAutomation() {
-  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
-  return {
-    enabled: isFeatureEnabled('aiWorkflowAutomation'),
-    config: getFeatureConfig('aiWorkflowAutomation')
-  }
+  return useMerlinsQuill()
 }
 
 export function useTemplateMarketplace() {
-  const { isFeatureEnabled, getFeatureConfig } = useFeatures()
-  return {
-    enabled: isFeatureEnabled('templateMarketplace'),
-    config: getFeatureConfig('templateMarketplace')
-  }
+  return useCamelotLibrary()
 }

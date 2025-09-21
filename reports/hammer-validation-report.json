@@ -1,0 +1,99 @@
+{
+  "timestamp": "2025-09-21T18:16:30.993Z",
+  "version": "1.1.7-hammer-optimized",
+  "environment": "http://localhost:3001",
+  "summary": {
+    "overallScore": 70,
+    "productionReadiness": 67,
+    "recommendation": "NEEDS IMPROVEMENT"
+  },
+  "details": {
+    "performance": {
+      "totalRequests": 1000,
+      "successfulRequests": 1000,
+      "failedRequests": 0,
+      "averageResponseTime": 57.48699999999996,
+      "minResponseTime": 26,
+      "maxResponseTime": 137,
+      "requestsUnder100ms": 946,
+      "requestsUnder500ms": 1000,
+      "requestsOver1000ms": 0,
+      "score": 99
+    },
+    "security": {
+      "securityHeaders": {
+        "strict-transport-security": {
+          "present": false,
+          "value": null
+        },
+        "content-security-policy": {
+          "present": false,
+          "value": null
+        },
+        "x-content-type-options": {
+          "present": false,
+          "value": null
+        },
+        "x-frame-options": {
+          "present": false,
+          "value": null
+        },
+        "x-xss-protection": {
+          "present": false,
+          "value": null
+        },
+        "referrer-policy": {
+          "present": false,
+          "value": null
+        }
+      },
+      "vulnerabilities": [
+        {
+          "name": "Path Traversal",
+          "severity": "high",
+          "url": "http://localhost:3001/api/../../../etc/passwd"
+        }
+      ],
+      "score": 0
+    },
+    "accessibility": {
+      "checks": [
+        {
+          "name": "Service Worker Registration",
+          "passed": true,
+          "score": 20,
+          "weight": 20
+        },
+        {
+          "name": "Offline Functionality",
+          "passed": true,
+          "score": 20,
+          "weight": 20
+        },
+        {
+          "name": "Error Boundaries",
+          "passed": true,
+          "score": 20,
+          "weight": 20
+        },
+        {
+          "name": "Loading States",
+          "passed": true,
+          "score": 20,
+          "weight": 20
+        },
+        {
+          "name": "Accessibility Components",
+          "passed": true,
+          "score": 20,
+          "weight": 20
+        }
+      ],
+      "score": 100
+    },
+    "overall": {
+      "score": 70,
+      "readiness": 67
+    }
+  }
+}

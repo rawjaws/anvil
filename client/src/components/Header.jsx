@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Settings, HelpCircle, Bot, Lightbulb, BarChart3, Sliders } from 'lucide-react'
+import { Settings, HelpCircle, Bot, Lightbulb, BarChart3, Sliders, Brain } from 'lucide-react'
 import { useApp } from '../contexts/AppContext'
 import { useFeatures } from '../contexts/FeatureContext'
 import RealtimeNotifications from './RealtimeNotifications.jsx'
@@ -51,22 +51,29 @@ export default function Header({ realtimeNotifications = null }) {
             <button
               className="agents-button"
               onClick={() => navigate('/agents')}
-              title="Agent Dashboard"
+              title="Knights of the Round Table"
             >
               <Bot size={20} />
             </button>
             <button
               className="discovery-button"
               onClick={() => navigate('/discovery')}
-              title="Discovery - AI Analysis"
+              title="Sir Percival's Quest - Holy Grail Discovery"
             >
               <Lightbulb size={20} />
             </button>
-            {isFeatureEnabled('advancedAnalytics') && (
+            <button
+              className="intelligence-button"
+              onClick={() => navigate('/intelligence')}
+              title="Oracle - Market Intelligence & Future Sight"
+            >
+              <Brain size={20} />
+            </button>
+            {isFeatureEnabled('morganasCrystalBall') && (
               <button
                 className="analytics-button"
                 onClick={() => navigate('/analytics')}
-                title="Advanced Analytics"
+                title="Morgana's Crystal Ball - Mystical Analytics"
               >
                 <BarChart3 size={20} />
               </button>
@@ -74,7 +81,7 @@ export default function Header({ realtimeNotifications = null }) {
             <button
               className="features-button"
               onClick={() => navigate('/features')}
-              title="Feature Management"
+              title="Kingdom Management"
             >
               <Sliders size={20} />
             </button>

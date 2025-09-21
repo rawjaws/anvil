@@ -5,6 +5,7 @@
 
 const fs = require('fs-extra')
 const path = require('path')
+const { ComplianceEngine } = require('../ai-services/ComplianceEngine')
 
 class RequirementsPrecisionEngine {
   constructor(config = {}) {
@@ -17,6 +18,9 @@ class RequirementsPrecisionEngine {
       realTimeValidation: true,
       autoFixSuggestions: true,
       validationRules: 'strict',
+      // Compliance integration
+      enableComplianceChecking: config.enableComplianceChecking !== false,
+      complianceRealtimeMode: config.complianceRealtimeMode !== false,
       // Performance optimizations
       maxConcurrentValidations: config.maxConcurrentValidations || 10,
       enableWorkerPool: config.enableWorkerPool !== false,
@@ -31,6 +35,11 @@ class RequirementsPrecisionEngine {
     this.dependencyGraph = new Map()
     this.traceabilityMap = new Map()
     this.validationRules = this.initializeValidationRules()
+
+    // Initialize Compliance Engine if enabled
+    if (this.config.enableComplianceChecking) {
+      this.complianceEngine = new ComplianceEngine(config.compliance || {})
+    }
 
     // Performance tracking
     this.performanceMetrics = {
@@ -141,6 +150,11 @@ class RequirementsPrecisionEngine {
         this.validateQualityGates(document, documentType),
         this.validateBusinessLogic(document, documentType)
       ]
+
+      // Add compliance checking if enabled
+      if (this.config.enableComplianceChecking && this.complianceEngine) {
+        validationPromises.push(this.validateCompliance(document, documentType, context))
+      }
 
       // Execute validations with controlled concurrency
       const results = await this.executeWithConcurrencyLimit(validationPromises, 3)
@@ -312,6 +326,124 @@ class RequirementsPrecisionEngine {
     }
 
     return result
+  }
+
+  /**
+   * Validate compliance with industry regulations
+   */
+  async validateCompliance(document, documentType, context) {
+    const result = { errors: [], warnings: [], suggestions: [], complianceInfo: null }
+
+    try {
+      if (!this.complianceEngine) {
+        result.warnings.push({
+          type: 'COMPLIANCE_ENGINE_UNAVAILABLE',
+          message: 'Compliance engine not available',
+          severity: 'low',
+          field: 'compliance',
+          suggestion: 'Enable compliance checking in configuration'
+        })
+        return result
+      }
+
+      // Perform compliance check
+      const complianceResult = await this.complianceEngine.checkCompliance(document, {
+        ...context,
+        documentType,
+        validationContext: 'requirements-precision'
+      })
+
+      result.complianceInfo = complianceResult
+
+      // Convert compliance violations to validation errors
+      if (complianceResult.violations && complianceResult.violations.length > 0) {
+        complianceResult.violations.forEach(violation => {
+          const severity = this.mapComplianceSeverityToValidation(violation.severity)
+
+          result.errors.push({
+            type: 'COMPLIANCE_VIOLATION',
+            message: `${violation.regulation}: ${violation.message}`,
+            severity,
+            field: 'compliance',
+            regulation: violation.regulation,
+            requirement: violation.requirement,
+            article: violation.article,
+            suggestion: violation.remediation || 'Review compliance requirements'
+          })
+        })
+      }
+
+      // Convert compliance recommendations to validation suggestions
+      if (complianceResult.recommendations && complianceResult.recommendations.length > 0) {
+        complianceResult.recommendations.forEach(recommendation => {
+          result.suggestions.push({
+            type: 'COMPLIANCE_RECOMMENDATION',
+            message: recommendation.message,
+            severity: 'low',
+            field: 'compliance',
+            category: recommendation.type,
+            regulation: recommendation.regulation,
+            suggestion: recommendation.action || recommendation.message
+          })
+        })
+      }
+
+      // Add compliance score information
+      if (complianceResult.complianceScore !== undefined) {
+        if (complianceResult.complianceScore < 70) {
+          result.warnings.push({
+            type: 'LOW_COMPLIANCE_SCORE',
+            message: `Compliance score (${complianceResult.complianceScore}%) below recommended threshold`,
+            severity: 'medium',
+            field: 'compliance',
+            suggestion: 'Address compliance violations to improve score'
+          })
+        }
+      }
+
+      // Add risk level warnings
+      if (complianceResult.riskLevel === 'High') {
+        result.errors.push({
+          type: 'HIGH_COMPLIANCE_RISK',
+          message: 'High compliance risk detected',
+          severity: 'high',
+          field: 'compliance',
+          suggestion: 'Immediate compliance review and remediation required'
+        })
+      } else if (complianceResult.riskLevel === 'Medium') {
+        result.warnings.push({
+          type: 'MEDIUM_COMPLIANCE_RISK',
+          message: 'Medium compliance risk detected',
+          severity: 'medium',
+          field: 'compliance',
+          suggestion: 'Schedule compliance review and remediation'
+        })
+      }
+
+    } catch (error) {
+      result.warnings.push({
+        type: 'COMPLIANCE_CHECK_ERROR',
+        message: `Compliance check failed: ${error.message}`,
+        severity: 'medium',
+        field: 'compliance',
+        suggestion: 'Manual compliance review recommended'
+      })
+    }
+
+    return result
+  }
+
+  /**
+   * Map compliance severity to validation severity
+   */
+  mapComplianceSeverityToValidation(complianceSeverity) {
+    const mapping = {
+      'critical': 'high',
+      'high': 'high',
+      'medium': 'medium',
+      'low': 'low'
+    }
+    return mapping[complianceSeverity] || 'medium'
   }
 
   /**

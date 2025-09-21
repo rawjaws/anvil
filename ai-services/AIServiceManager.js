@@ -4,6 +4,8 @@
  */
 
 const EventEmitter = require('events');
+const { PreCogMarketEngine } = require('./PreCogMarketEngine');
+const { ComplianceEngine } = require('./ComplianceEngine');
 
 class AIServiceManager extends EventEmitter {
   constructor(config = {}) {
@@ -40,6 +42,12 @@ class AIServiceManager extends EventEmitter {
     this.registerService('claude', new ClaudeAIService(this.config.claude || {}));
     this.registerService('analysis', new AnalysisAIService(this.config.analysis || {}));
     this.registerService('suggestions', new SuggestionsAIService(this.config.suggestions || {}));
+
+    // Register PreCog Market Intelligence Engine
+    this.registerService('precog-market', new PreCogMarketEngine(this.config.precog || {}));
+
+    // Register Compliance Engine
+    this.registerService('compliance', new ComplianceEngine(this.config.compliance || {}));
 
     this.emit('ai-service-manager-initialized', {
       timestamp: new Date().toISOString(),
@@ -169,6 +177,26 @@ class AIServiceManager extends EventEmitter {
       case 'recommendations':
       case 'improvements':
         serviceName = 'suggestions';
+        break;
+
+      // PreCog Market Intelligence requests
+      case 'market-precognition':
+      case 'prevision-analysis':
+      case 'oracle-intelligence':
+      case 'precrime-detection':
+      case 'future-sight':
+      case 'minority-report':
+      case 'vision-chamber-analysis':
+        serviceName = 'precog-market';
+        break;
+
+      // Compliance Engine requests
+      case 'compliance-check':
+      case 'bulk-compliance-check':
+      case 'regulation-detection':
+      case 'compliance-report':
+      case 'audit-trail':
+        serviceName = 'compliance';
         break;
 
       case 'general':
@@ -311,6 +339,110 @@ class AIServiceManager extends EventEmitter {
     };
 
     return await this.processRequest(analysisRequest);
+  }
+
+  /**
+   * PreCog Market Intelligence Methods
+   */
+  async performMarketPrecognition(market, timeframe = 90, options = {}) {
+    return await this.processRequest({
+      type: 'market-precognition',
+      market,
+      timeframe,
+      analysisDepth: options.depth || 'comprehensive',
+      ...options
+    });
+  }
+
+  async analyzeMarketTrends(market, timeframe = 90) {
+    return await this.processRequest({
+      type: 'prevision-analysis',
+      market,
+      timeframe
+    });
+  }
+
+  async gatherCompetitiveIntelligence(market, depth = 'standard') {
+    return await this.processRequest({
+      type: 'oracle-intelligence',
+      market,
+      depth
+    });
+  }
+
+  async detectMarketRisks(market, sensitivity = 'high') {
+    return await this.processRequest({
+      type: 'precrime-detection',
+      market,
+      sensitivity
+    });
+  }
+
+  async calculateSuccessProbability(market, timeframe = 90, factors = []) {
+    return await this.processRequest({
+      type: 'future-sight',
+      market,
+      timeframe,
+      factors
+    });
+  }
+
+  async findContrarianOpportunities(market, riskTolerance = 'medium') {
+    return await this.processRequest({
+      type: 'minority-report',
+      market,
+      riskTolerance
+    });
+  }
+
+  async performVisionChamberAnalysis(market, analysisType = 'comprehensive') {
+    return await this.processRequest({
+      type: 'vision-chamber-analysis',
+      market,
+      analysisType
+    });
+  }
+
+  /**
+   * Compliance Engine Methods
+   */
+  async checkCompliance(document, context = {}) {
+    return await this.processRequest({
+      type: 'compliance-check',
+      document,
+      context
+    });
+  }
+
+  async bulkComplianceCheck(documents, context = {}) {
+    return await this.processRequest({
+      type: 'bulk-compliance-check',
+      documents,
+      context
+    });
+  }
+
+  async detectRegulations(document, context = {}) {
+    return await this.processRequest({
+      type: 'regulation-detection',
+      document,
+      context
+    });
+  }
+
+  async generateComplianceReport(scope = 'all', options = {}) {
+    return await this.processRequest({
+      type: 'compliance-report',
+      scope,
+      options
+    });
+  }
+
+  async getAuditTrail(filters = {}) {
+    return await this.processRequest({
+      type: 'audit-trail',
+      filters
+    });
   }
 
   /**

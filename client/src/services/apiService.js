@@ -38,7 +38,7 @@ api.interceptors.response.use(
   }
 )
 
-export const apiService = {
+const apiService = {
   async getCapabilities() {
     try {
       const response = await api.get('/capabilities')
@@ -312,3 +312,9 @@ export const apiService = {
     }
   }
 }
+
+// Export as default for easier importing
+export default apiService;
+
+// Also export as named export for backward compatibility
+export { apiService };

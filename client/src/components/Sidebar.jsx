@@ -254,7 +254,7 @@ export default function Sidebar() {
           onClick={() => toggleSection('tools')}
         >
           {expandedSections.tools ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>AI Tools</span>
+          <span>The Blacksmith's Arsenal</span>
         </div>
 
         {expandedSections.tools && (
@@ -264,28 +264,28 @@ export default function Sidebar() {
               onClick={() => navigate('/validation')}
             >
               <Shield size={16} />
-              <span>Precision Engine</span>
+              <span>Sir Lancelot's Blade</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/analytics')}
             >
               <BarChart3 size={16} />
-              <span>Analytics</span>
+              <span>Morgana's Crystal Ball</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/agents')}
             >
               <Bot size={16} />
-              <span>Agent Dashboard</span>
+              <span>Knights of the Round Table</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/discovery')}
             >
               <Search size={16} />
-              <span>Discovery</span>
+              <span>Sir Percival's Quest</span>
             </div>
           </div>
         )}
@@ -298,7 +298,7 @@ export default function Sidebar() {
           onClick={() => toggleSection('features')}
         >
           {expandedSections.features ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>Marketplace</span>
+          <span>Camelot's Library</span>
         </div>
 
         {expandedSections.features && (
@@ -308,28 +308,28 @@ export default function Sidebar() {
               onClick={() => navigate('/marketplace')}
             >
               <ShoppingCart size={16} />
-              <span>Browse Templates</span>
+              <span>Browse Scrolls</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/marketplace/generate')}
             >
               <Activity size={16} />
-              <span>Generate Template</span>
+              <span>Forge New Scroll</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/marketplace/community')}
             >
               <Layers size={16} />
-              <span>Community Hub</span>
+              <span>Royal Court</span>
             </div>
             <div
               className="sidebar-item"
               onClick={() => navigate('/features')}
             >
               <Settings size={16} />
-              <span>Feature Management</span>
+              <span>Kingdom Management</span>
             </div>
           </div>
         )}
