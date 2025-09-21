@@ -220,6 +220,11 @@ function AppWithRealtime() {
                 <Discovery />
               </ErrorBoundary>
             } />
+            <Route path="/plan" element={
+              <ErrorBoundary level="component">
+                <Plan />
+              </ErrorBoundary>
+            } />
             <Route path="/intelligence" element={
               <AIWorkflowErrorBoundary>
                 <IntelligenceDashboard />
@@ -323,6 +328,8 @@ function AppWithRealtime() {
     </ErrorBoundary>
   );
 }
+// Plan component from v2.1.0
+const Plan = lazy(() => import('./components/Plan'))
 
 function App() {
   return (

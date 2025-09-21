@@ -5,18 +5,17 @@ import { FileText, Plus, ArrowLeft, ChevronDown, ChevronRight, Settings, Box, Za
 import './Sidebar.css'
 
 export default function Sidebar() {
-  const { 
-    capabilities, 
-    enablers, 
-    templates, 
-    selectedCapability, 
+  const {
+    capabilities,
+    enablers,
+    selectedCapability,
     setSelectedCapability,
     selectedDocument,
     setSelectedDocument,
     navigationHistory,
     goBack,
     clearHistory,
-    loading 
+    loading
   } = useApp()
   
   const [expandedSections, setExpandedSections] = useState({
@@ -56,14 +55,6 @@ export default function Sidebar() {
     navigate(`/view/enabler/${enabler.path}`)
   }
 
-  const handleTemplateClick = (template) => {
-    setSelectedDocument({ 
-      type: 'template', 
-      path: template.path, 
-      id: template.id || template.title || template.path
-    })
-    navigate(`/view/template/${template.path}`)
-  }
 
   const handleCreateCapability = () => {
     // Clear selected document when creating new
@@ -116,6 +107,17 @@ export default function Sidebar() {
   }
 
   const capabilityGroups = groupCapabilitiesBySystemComponent(capabilities)
+
+  // Find the capability associated with the currently selected enabler
+  const getAssociatedCapabilityId = () => {
+    if (selectedDocument?.type === 'enabler') {
+      const selectedEnabler = enablers.find(enabler => enabler.path === selectedDocument.path)
+      return selectedEnabler?.capabilityId
+    }
+    return null
+  }
+
+  const associatedCapabilityId = getAssociatedCapabilityId()
 
   if (loading) {
     return (
@@ -171,16 +173,21 @@ export default function Sidebar() {
                     <span>{groupKey}</span>
                   </div>
                   <div className="capability-group-items">
-                    {groupCapabilities.map((capability) => (
-                      <div
-                        key={capability.path}
-                        className={`sidebar-item capability-item ${selectedDocument?.type === 'capability' && selectedDocument?.path === capability.path ? 'active' : ''}`}
-                        onClick={() => handleCapabilityClick(capability)}
-                      >
-                        <Zap size={16} />
-                        <span>{capability.title || capability.name}</span>
-                      </div>
-                    ))}
+                    {groupCapabilities.map((capability) => {
+                      const isActive = selectedDocument?.type === 'capability' && selectedDocument?.path === capability.path
+                      const isAssociated = associatedCapabilityId && capability.id === associatedCapabilityId
+
+                      return (
+                        <div
+                          key={capability.path}
+                          className={`sidebar-item capability-item ${isActive ? 'active' : ''} ${isAssociated ? 'associated' : ''} ${capability.status === 'Implemented' ? 'implemented' : ''}`}
+                          onClick={() => handleCapabilityClick(capability)}
+                        >
+                          <Zap size={16} className={capability.status === 'Implemented' ? 'implemented-icon' : ''} />
+                          <span>{capability.title || capability.name}</span>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               ))}
@@ -209,12 +216,12 @@ export default function Sidebar() {
         {expandedSections.enablers && (
           <div className="sidebar-items">
             {filteredEnablers.map((enabler) => (
-              <div 
+              <div
                 key={enabler.path}
-                className={`sidebar-item ${selectedDocument?.type === 'enabler' && selectedDocument?.path === enabler.path ? 'active' : ''} ${selectedCapability ? 'indented' : ''}`}
+                className={`sidebar-item ${selectedDocument?.type === 'enabler' && selectedDocument?.path === enabler.path ? 'active' : ''} ${selectedCapability ? 'indented' : ''} ${enabler.status === 'Implemented' ? 'implemented' : ''}`}
                 onClick={() => handleEnablerClick(enabler)}
               >
-                <Zap size={16} />
+                <Zap size={16} className={enabler.status === 'Implemented' ? 'implemented-icon' : ''} />
                 <span>{enabler.title || enabler.name}</span>
               </div>
             ))}
@@ -223,7 +230,7 @@ export default function Sidebar() {
       </div>
 
       <div className="sidebar-section">
-        <div 
+        <div
           className="sidebar-section-header"
           onClick={() => toggleSection('templates')}
         >
@@ -329,7 +336,7 @@ export default function Sidebar() {
               onClick={() => navigate('/features')}
             >
               <Settings size={16} />
-              <span>Kingdom Management</span>
+              <span>Feature Management</span>
             </div>
           </div>
         )}

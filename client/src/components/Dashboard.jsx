@@ -8,7 +8,7 @@ import './Dashboard.css'
 const RelationshipDiagram = lazy(() => import('./RelationshipDiagram'))
 
 export default function Dashboard() {
-  const { capabilities, enablers, templates, loading, error } = useApp()
+  const { capabilities, enablers, loading, error } = useApp()
   const navigate = useNavigate()
 
   if (loading) {
@@ -32,7 +32,7 @@ export default function Dashboard() {
     <div className="dashboard">
       <div className="dashboard-header">
         <h2>Document Dashboard</h2>
-        <p>Manage your capabilities, enablers, and templates</p>
+        <p>Manage your capabilities and enablers</p>
       </div>
 
       <Suspense fallback={<div className="loading-placeholder">Loading relationship diagram...</div>}>
@@ -60,15 +60,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon">
-            <Settings size={24} />
-          </div>
-          <div className="stat-content">
-            <div className="stat-number">{templates.length}</div>
-            <div className="stat-label">Templates</div>
-          </div>
-        </div>
       </div>
 
       <div className="dashboard-actions">

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Settings, HelpCircle, Bot, Lightbulb, BarChart3, Sliders, Brain } from 'lucide-react'
+import { Settings, HelpCircle, Bot, Lightbulb, BarChart3, Sliders, Brain, Clipboard } from 'lucide-react'
 import { useApp } from '../contexts/AppContext'
 import { useFeatures } from '../contexts/FeatureContext'
 import RealtimeNotifications from './RealtimeNotifications.jsx'
@@ -58,7 +58,7 @@ export default function Header({ realtimeNotifications = null }) {
             <button
               className="discovery-button"
               onClick={() => navigate('/discovery')}
-              title="Sir Percival's Quest - Holy Grail Discovery"
+              title="Discovery - AI-powered project analysis"
             >
               <Lightbulb size={20} />
             </button>
@@ -69,21 +69,26 @@ export default function Header({ realtimeNotifications = null }) {
             >
               <Brain size={20} />
             </button>
-            {isFeatureEnabled('morganasCrystalBall') && (
-              <button
-                className="analytics-button"
-                onClick={() => navigate('/analytics')}
-                title="Morgana's Crystal Ball - Mystical Analytics"
-              >
-                <BarChart3 size={20} />
-              </button>
-            )}
+            <button
+              className="analytics-button"
+              onClick={() => navigate('/analytics')}
+              title="Advanced Analytics - Insights and predictions"
+            >
+              <BarChart3 size={20} />
+            </button>
             <button
               className="features-button"
               onClick={() => navigate('/features')}
-              title="Kingdom Management"
+              title="Feature Management - Toggles and compliance"
             >
               <Sliders size={20} />
+            </button>
+            <button
+              className="plan-button"
+              onClick={() => window.open('/SOFTWARE_DEVELOPMENT_PLAN.md', '_blank')}
+              title="Software Development Plan"
+            >
+              <Clipboard size={20} />
             </button>
             <button
               className="help-button"

@@ -122,7 +122,8 @@
 .discovery-button,
 .intelligence-button,
 .analytics-button,
-.features-button {
+.features-button,
+.plan-button {
   background: none;
   border: none;
   color: #4a90e2;
@@ -141,7 +142,8 @@
 .discovery-button:hover,
 .intelligence-button:hover,
 .analytics-button:hover,
-.features-button:hover {
+.features-button:hover,
+.plan-button:hover {
   background: rgba(74, 144, 226, 0.1);
   color: #357abd;
   transform: scale(1.1);
@@ -153,7 +155,8 @@
 .discovery-button:active,
 .intelligence-button:active,
 .analytics-button:active,
-.features-button:active {
+.features-button:active,
+.plan-button:active {
   transform: scale(0.95);
 }
 
