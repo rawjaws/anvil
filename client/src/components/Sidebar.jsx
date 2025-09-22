@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
-import { FileText, Plus, ArrowLeft, ChevronDown, ChevronRight, Settings, Box, Zap, Activity, BarChart3, ShoppingCart, Bot, Search, Shield, Layers } from 'lucide-react'
+import { FileText, Plus, ArrowLeft, ChevronDown, ChevronRight, Settings, Box, Zap, Activity, BarChart3, ShoppingCart, Bot, Search, Shield, Layers, Wand2, Crystal, Sliders } from 'lucide-react'
 import './Sidebar.css'
 
 export default function Sidebar() {
@@ -22,9 +22,10 @@ export default function Sidebar() {
   const [expandedSections, setExpandedSections] = useState({
     capabilities: true,
     enablers: true,
-    templates: true,
-    tools: true,
-    features: true
+    templates: false,
+    aiKingdom: true,
+    powerTools: true,
+    features: false
   })
   
   const navigate = useNavigate()
@@ -264,96 +265,123 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* AI Tools Section */}
+      {/* 🤖 AI Kingdom Section */}
       <div className="sidebar-section">
         <div
-          className="sidebar-section-header"
-          onClick={() => toggleSection('tools')}
+          className="sidebar-section-header ai-kingdom-header"
+          onClick={() => toggleSection('aiKingdom')}
         >
-          {expandedSections.tools ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>AI Tools</span>
+          {expandedSections.aiKingdom ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          <span>🤖 AI Kingdom</span>
         </div>
 
-        {expandedSections.tools && (
+        {expandedSections.aiKingdom && (
           <div className="sidebar-items">
             <div
-              className="sidebar-item"
+              className="sidebar-item ai-kingdom-item"
+              onClick={() => navigate('/agents')}
+            >
+              <Bot size={16} />
+              <span>The Blacksmith</span>
+              <small>Agent Dashboard</small>
+            </div>
+            <div
+              className="sidebar-item ai-kingdom-item"
+              onClick={() => navigate('/ai-workflow')}
+            >
+              <Wand2 size={16} />
+              <span>Merlin</span>
+              <small>AI Writing Assistant</small>
+            </div>
+            <div
+              className="sidebar-item ai-kingdom-item"
+              onClick={() => navigate('/intelligence')}
+            >
+              <Crystal size={16} />
+              <span>Oracle</span>
+              <small>Market Intelligence</small>
+            </div>
+            <div
+              className="sidebar-item ai-kingdom-item"
+              onClick={() => navigate('/discovery')}
+            >
+              <Search size={16} />
+              <span>Discovery</span>
+              <small>Project Analysis</small>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ⚡ Power Tools Section */}
+      <div className="sidebar-section">
+        <div
+          className="sidebar-section-header power-tools-header"
+          onClick={() => toggleSection('powerTools')}
+        >
+          {expandedSections.powerTools ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          <span>⚡ Power Tools</span>
+        </div>
+
+        {expandedSections.powerTools && (
+          <div className="sidebar-items">
+            <div
+              className="sidebar-item power-tools-item"
               onClick={() => navigate('/validation')}
             >
               <Shield size={16} />
               <span>Requirements Precision</span>
             </div>
             <div
-              className="sidebar-item"
+              className="sidebar-item power-tools-item"
               onClick={() => navigate('/analytics')}
             >
               <BarChart3 size={16} />
               <span>Advanced Analytics</span>
             </div>
             <div
-              className="sidebar-item"
-              onClick={() => navigate('/agents')}
+              className="sidebar-item power-tools-item"
+              onClick={() => navigate('/features')}
             >
-              <Bot size={16} />
-              <span>Agent Dashboard</span>
-            </div>
-            <div
-              className="sidebar-item"
-              onClick={() => navigate('/discovery')}
-            >
-              <Search size={16} />
-              <span>Discovery</span>
-            </div>
-            <div
-              className="sidebar-item"
-              onClick={() => navigate('/intelligence')}
-            >
-              <Bot size={16} />
-              <span>Oracle Intelligence</span>
+              <Sliders size={16} />
+              <span>Feature Management</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Marketplace Section */}
+      {/* 🏪 Marketplace Section */}
       <div className="sidebar-section">
         <div
-          className="sidebar-section-header"
+          className="sidebar-section-header marketplace-header"
           onClick={() => toggleSection('features')}
         >
           {expandedSections.features ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>Marketplace & Features</span>
+          <span>🏪 Marketplace</span>
         </div>
 
         {expandedSections.features && (
           <div className="sidebar-items">
             <div
-              className="sidebar-item"
+              className="sidebar-item marketplace-item"
               onClick={() => navigate('/marketplace')}
             >
               <ShoppingCart size={16} />
               <span>Browse Templates</span>
             </div>
             <div
-              className="sidebar-item"
+              className="sidebar-item marketplace-item"
               onClick={() => navigate('/marketplace/generate')}
             >
               <Activity size={16} />
               <span>Generate Template</span>
             </div>
             <div
-              className="sidebar-item"
+              className="sidebar-item marketplace-item"
               onClick={() => navigate('/marketplace/community')}
             >
               <Layers size={16} />
               <span>Community Hub</span>
-            </div>
-            <div
-              className="sidebar-item"
-              onClick={() => navigate('/features')}
-            >
-              <Settings size={16} />
-              <span>Feature Management</span>
             </div>
           </div>
         )}

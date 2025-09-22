@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Settings, HelpCircle, Bot, Lightbulb, BarChart3, Sliders, Brain, Clipboard } from 'lucide-react'
+import { Settings, HelpCircle, Bot, Lightbulb, BarChart3, Sliders, Brain, Clipboard, Wand2, Crystal, ScrollText } from 'lucide-react'
 import { useApp } from '../contexts/AppContext'
 import { useFeatures } from '../contexts/FeatureContext'
 import RealtimeNotifications from './RealtimeNotifications.jsx'
@@ -21,6 +21,9 @@ export default function Header({ realtimeNotifications = null }) {
 
   // Extract major version for level display
   const majorVersion = version.split('.')[0]
+
+  // Force cache invalidation with timestamp
+  console.log('Header version check:', version, 'Timestamp:', new Date().toISOString())
 
   return (
     <header className="header">
@@ -48,34 +51,51 @@ export default function Header({ realtimeNotifications = null }) {
           </div>
           <div className="header-actions">
             {realtimeNotifications && realtimeNotifications}
-            <button
-              className="agents-button"
-              onClick={() => navigate('/agents')}
-              title="Knights of the Round Table"
-            >
-              <Bot size={20} />
-            </button>
-            <button
-              className="discovery-button"
-              onClick={() => navigate('/discovery')}
-              title="Discovery - AI-powered project analysis"
-            >
-              <Lightbulb size={20} />
-            </button>
-            <button
-              className="intelligence-button"
-              onClick={() => navigate('/intelligence')}
-              title="Oracle - Market Intelligence & Future Sight"
-            >
-              <Brain size={20} />
-            </button>
-            <button
-              className="analytics-button"
-              onClick={() => navigate('/analytics')}
-              title="Advanced Analytics - Insights and predictions"
-            >
-              <BarChart3 size={20} />
-            </button>
+            {isFeatureEnabled('theBlacksmithInterface') && (
+              <button
+                className="agents-button"
+                onClick={() => navigate('/agents')}
+                title="The Blacksmith - Agent Dashboard"
+              >
+                <Bot size={20} />
+              </button>
+            )}
+            {isFeatureEnabled('anvilNavigationSystem') && (
+              <button
+                className="discovery-button"
+                onClick={() => navigate('/discovery')}
+                title="Discovery - AI-powered project analysis"
+              >
+                <Lightbulb size={20} />
+              </button>
+            )}
+            {isFeatureEnabled('oracleIntelligence') && (
+              <button
+                className="intelligence-button"
+                onClick={() => navigate('/intelligence')}
+                title="Oracle - Market Intelligence"
+              >
+                <Crystal size={20} />
+              </button>
+            )}
+            {isFeatureEnabled('merlinAIAssistant') && (
+              <button
+                className="workflow-button"
+                onClick={() => navigate('/ai-workflow')}
+                title="Merlin - AI Writing Assistant"
+              >
+                <Wand2 size={20} />
+              </button>
+            )}
+            {isFeatureEnabled('advancedAnalytics') && (
+              <button
+                className="analytics-button"
+                onClick={() => navigate('/analytics')}
+                title="Advanced Analytics - Insights and predictions"
+              >
+                <BarChart3 size={20} />
+              </button>
+            )}
             <button
               className="features-button"
               onClick={() => navigate('/features')}

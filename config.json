@@ -86,6 +86,52 @@
         "autoFixSuggestions": true,
         "validationRules": "strict"
       }
+    },
+    "enhancedUIExperience": {
+      "enabled": true,
+      "config": {
+        "improvedHeaderIcons": true,
+        "uniqueFeatureIcons": true,
+        "betterSpacing": true,
+        "responsiveLayout": true
+      }
+    },
+    "anvilNavigationSystem": {
+      "enabled": true,
+      "config": {
+        "organizedSidebar": true,
+        "aiKingdomSection": true,
+        "powerToolsSection": true,
+        "featureSpotlight": true,
+        "collapsibleSections": true
+      }
+    },
+    "theBlacksmithInterface": {
+      "enabled": true,
+      "config": {
+        "medievalThemeElements": true,
+        "agentDashboardAccess": true,
+        "hammerDeploymentUI": true,
+        "qualityControlIndicators": true
+      }
+    },
+    "merlinAIAssistant": {
+      "enabled": true,
+      "config": {
+        "aiWritingTools": true,
+        "naturalLanguageProcessing": true,
+        "contentGeneration": true,
+        "intelligentSuggestions": true
+      }
+    },
+    "oracleIntelligence": {
+      "enabled": true,
+      "config": {
+        "marketAnalysis": true,
+        "predictiveInsights": true,
+        "competitiveAnalysis": true,
+        "futureSignaling": true
+      }
     }
   },
   "importedComponents": []
